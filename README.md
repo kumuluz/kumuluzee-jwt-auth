@@ -33,7 +33,7 @@ token.
 
 ##  Accessing token information
 
-There are multiple ways with which you can access the decoded token data. The standard way is to access the principa 
+There are multiple ways with which you can access the decoded token data. The standard way is to access the principal 
 contained in the security context:
 
 ```java
