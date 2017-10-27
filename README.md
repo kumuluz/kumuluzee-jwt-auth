@@ -3,7 +3,7 @@
 
 > KumuluzEE JWT Auth extension provides a standardised way to secure your microservices with oAuth 2.0 or OpenID Connect using Json Web Tokens.
 
-KumuluzEE JWT Auth implements the []MicroProfile JWT Auth](https://microprofile.io/project/eclipse/microprofile-jwt-auth) 1.0 API.
+KumuluzEE JWT Auth implements the [MicroProfile JWT Auth](https://microprofile.io/project/eclipse/microprofile-jwt-auth) 1.0 API.
 
 ## Usage
 
