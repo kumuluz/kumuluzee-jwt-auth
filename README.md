@@ -1,13 +1,13 @@
-# KumuluzEE JWT Auth
+# KumuluzEE JWT Authentication
 [![Build Status](https://img.shields.io/travis/kumuluz/kumuluzee-metrics/master.svg?style=flat)](https://travis-ci.org/kumuluz/kumuluzee-jwt-auth)
 
-> KumuluzEE JWT Auth extension provides a standardised way to secure your microservices with oAuth 2.0 or OpenID Connect using Json Web Tokens.
+> KumuluzEE JWT Authentication extension provides Microprofile compliant role based access control microservice endpoints using OpenID Connect and JSON Web Tokens.
 
-KumuluzEE JWT Auth implements the [MicroProfile JWT Auth](https://microprofile.io/project/eclipse/microprofile-jwt-auth) 1.0 API.
+KumuluzEE JWT Authentication implements the [MicroProfile JWT Authentication 1.0 API](https://microprofile.io/project/eclipse/microprofile-jwt-auth).
 
 ## Usage
 
-You can enable KumuluzEE JWT Auth support by adding the following dependency:
+You can enable KumuluzEE JWT Authentication support by adding the following dependency:
 
 ```xml
 <dependency>
@@ -17,7 +17,7 @@ You can enable KumuluzEE JWT Auth support by adding the following dependency:
 </dependency>
 ```
 
-### Configuration
+## Configuration
 
 In order for the extension to work correctly you must provide two configuration properties:
 
@@ -31,7 +31,7 @@ kumuluzee:
 The `public key` and `issuer` configuration properties are used to validate and decode the received `Authorization` 
 token.
 
-###  Accessing token information
+##  Accessing token information
 
 There are multiple ways with which you can access the decoded token data. The standard way is to access the principa 
 contained in the security context:
