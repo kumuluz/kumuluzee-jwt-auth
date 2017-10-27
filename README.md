@@ -1,7 +1,7 @@
 # KumuluzEE JWT Auth
 [![Build Status](https://img.shields.io/travis/kumuluz/kumuluzee-metrics/master.svg?style=flat)](https://travis-ci.org/kumuluz/kumuluzee-jwt-auth)
 
-> Metrics extension for the KumuluzEE microservice framework
+> KumuluzEE JWT Auth extension provides a standardised way to secure your microservices with oAuth 2.0 or OpenID Connect using Json Web Tokens.
 
 ## Usage
 

@@ -12,7 +12,7 @@
 
     <inceptionYear>2017</inceptionYear>
     <description>
-        KumuluzEE Metrics extension provides powerful tools and utilities to measure the behavior of critical microservice components in your highly available production environment.
+        KumuluzEE JWT Auth extension provides a standardised way to secure your microservices with oAuth 2.0 or OpenID Connect using Json Web Tokens.
     </description>
 
     <url>https://ee.kumuluz.com</url>
