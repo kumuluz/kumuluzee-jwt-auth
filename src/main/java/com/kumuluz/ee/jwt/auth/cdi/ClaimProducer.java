@@ -477,7 +477,7 @@ public class ClaimProducer {
         if (bean == null) {
             beanClass = injectionPoint.getMember().getDeclaringClass();
         } else {
-            beanClass = bean.getClass();
+            beanClass = bean.getBeanClass();
         }
 
         if (beanClass.getAnnotation(ApplicationScoped.class) != null || beanClass.getAnnotation(SessionScoped.class) != null) {
