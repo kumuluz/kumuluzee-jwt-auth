@@ -1,7 +1,6 @@
 package com.kumuluz.ee.jwt.auth.principal;
 
 import com.auth0.jwt.interfaces.Claim;
-import com.kumuluz.ee.jwt.auth.helper.ClaimHelper;
 import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
@@ -34,11 +33,6 @@ public class JWTPrincipal implements JsonWebToken {
     @Override
     public Set<String> getClaimNames() {
         return convertedClaims.keySet();
-    }
-
-    @Override
-    public String getRawToken() {
-        return (String) convertedClaims.get(Claims.raw_token.name());
     }
 
     @SuppressWarnings("unchecked")
@@ -79,6 +73,7 @@ public class JWTPrincipal implements JsonWebToken {
         }
 
         if (claimType.equals(Claims.UNKNOWN) && !convertedClaims.containsKey(claimName)) {
+            LOG.fine(String.format("No claim with name '%s' found.", claimName));
             return null;
         }
 
@@ -148,6 +143,7 @@ public class JWTPrincipal implements JsonWebToken {
         convertedClaims.put(claimName, jsonArray);
     }
 
+    @SuppressWarnings("unchecked")
     private void convertMap(String claimName) {
         Map map = (Map) convertedClaims.get(claimName);
         JsonObject jsonObject = convertMap(map);
@@ -160,6 +156,7 @@ public class JWTPrincipal implements JsonWebToken {
         convertedClaims.put(claimName, jsonNumber);
     }
 
+    @SuppressWarnings("unchecked")
     private JsonObject convertMap(Map<String, Object> map) {
         JsonObjectBuilder builder = Json.createObjectBuilder();
         for(Map.Entry<String,Object> entry : map.entrySet()) {
