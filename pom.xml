@@ -100,30 +100,30 @@
             <version>1.0</version>
         </dependency>
         <!--<dependency>-->
-        <!--<groupId>org.bitbucket.b_c</groupId>-->
-        <!--<artifactId>jose4j</artifactId>-->
-        <!--<version>0.6.1</version>-->
+            <!--<groupId>org.bitbucket.b_c</groupId>-->
+            <!--<artifactId>jose4j</artifactId>-->
+            <!--<version>0.6.1</version>-->
         <!--</dependency>-->
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>${java-jwt.version}</version>
             <!--<exclusions>-->
-            <!--<exclusion>-->
-            <!--<groupId>com.fasterxml.jackson.core</groupId>-->
-            <!--<artifactId>jackson-databind</artifactId>-->
-            <!--</exclusion>-->
+                <!--<exclusion>-->
+                    <!--<groupId>com.fasterxml.jackson.core</groupId>-->
+                    <!--<artifactId>jackson-databind</artifactId>-->
+                <!--</exclusion>-->
             <!--</exclusions>-->
         </dependency>
         <!--<dependency>-->
-        <!--<groupId>com.fasterxml.jackson.core</groupId>-->
-        <!--<artifactId>jackson-annotations</artifactId>-->
-        <!--<version>${jackson.version}</version>-->
+            <!--<groupId>com.fasterxml.jackson.core</groupId>-->
+            <!--<artifactId>jackson-annotations</artifactId>-->
+            <!--<version>${jackson.version}</version>-->
         <!--</dependency>-->
         <!--<dependency>-->
-        <!--<groupId>com.fasterxml.jackson.core</groupId>-->
-        <!--<artifactId>jackson-databind</artifactId>-->
-        <!--<version>${jackson.version}</version>-->
+            <!--<groupId>com.fasterxml.jackson.core</groupId>-->
+            <!--<artifactId>jackson-databind</artifactId>-->
+            <!--<version>${jackson.version}</version>-->
         <!--</dependency>-->
     </dependencies>
 
