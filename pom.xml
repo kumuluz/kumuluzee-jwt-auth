@@ -22,10 +22,9 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <kumuluzee.version>2.4.1</kumuluzee.version>
+        <kumuluzee.version>2.5.0-SNAPSHOT</kumuluzee.version>
         <microprofile-jwt-auth.version>1.0</microprofile-jwt-auth.version>
         <java-jwt.version>3.2.0</java-jwt.version>
-        <!--<jackson.version>2.8.10</jackson.version>-->
 
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
         <nexus.staging.plugin.version>1.6.8</nexus.staging.plugin.version>
@@ -99,32 +98,11 @@
             <artifactId>microprofile-jwt-auth-api</artifactId>
             <version>1.0</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.bitbucket.b_c</groupId>-->
-            <!--<artifactId>jose4j</artifactId>-->
-            <!--<version>0.6.1</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>${java-jwt.version}</version>
-            <!--<exclusions>-->
-                <!--<exclusion>-->
-                    <!--<groupId>com.fasterxml.jackson.core</groupId>-->
-                    <!--<artifactId>jackson-databind</artifactId>-->
-                <!--</exclusion>-->
-            <!--</exclusions>-->
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>com.fasterxml.jackson.core</groupId>-->
-            <!--<artifactId>jackson-annotations</artifactId>-->
-            <!--<version>${jackson.version}</version>-->
-        <!--</dependency>-->
-        <!--<dependency>-->
-            <!--<groupId>com.fasterxml.jackson.core</groupId>-->
-            <!--<artifactId>jackson-databind</artifactId>-->
-            <!--<version>${jackson.version}</version>-->
-        <!--</dependency>-->
     </dependencies>
 
     <build>
