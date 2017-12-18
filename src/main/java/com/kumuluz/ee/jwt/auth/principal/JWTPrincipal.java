@@ -174,7 +174,7 @@ public class JWTPrincipal implements JsonWebToken {
                 double dvalue = ((Number) entryValue).doubleValue();
                 builder.add(entry.getKey(), dvalue);
             } else if(entryValue instanceof Boolean) {
-                boolean flag = ((Boolean) entryValue).booleanValue();
+                boolean flag = (Boolean) entryValue;
                 builder.add(entry.getKey(), flag);
             } else if(entryValue instanceof String) {
                 builder.add(entry.getKey(), entryValue.toString());
