@@ -50,9 +50,8 @@ public class JWTContextInfo {
         return publicKey;
     }
 
-    public JWTContextInfo setPublicKey(String publicKey) {
+    public void setPublicKey(String publicKey) {
         this.publicKey = publicKey;
-        return this;
     }
 
     public RSAPublicKey getDecodedPublicKey() {
@@ -76,8 +75,7 @@ public class JWTContextInfo {
         return issuer;
     }
 
-    public JWTContextInfo setIssuer(String issuer) {
+    public void setIssuer(String issuer) {
         this.issuer = issuer;
-        return this;
     }
 }
