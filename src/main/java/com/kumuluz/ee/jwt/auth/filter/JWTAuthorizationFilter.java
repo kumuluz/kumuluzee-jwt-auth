@@ -73,9 +73,6 @@ public class JWTAuthorizationFilter implements ContainerRequestFilter {
                 LOG.fine("Authentication failed: " + e.getMessage());
                 requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
             }
-        } else {
-            LOG.fine("Authentication failed due to missing Authorization bearer token.");
-            requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
         }
     }
 
