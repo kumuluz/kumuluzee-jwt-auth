@@ -17,6 +17,12 @@ You can enable KumuluzEE JWT Authentication support by adding the following depe
 </dependency>
 ```
 
+The provided filters should be added automatically upon running. If that doesn't happen or if you wish to manually 
+include the provided filters, register the following classes:
+
+- JWTAuthorizationFilter
+- JWTRolesAllowedDynamicFeature  
+
 ## Configuration
 
 In order for the extension to work correctly you must provide two configuration properties:

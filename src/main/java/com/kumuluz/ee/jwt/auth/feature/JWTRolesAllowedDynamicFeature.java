@@ -17,7 +17,10 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 
 /**
- * @author Benjamin Kastelic, Sunesis ltd.
+ * A JAX-RS dynamic feature that configures and registers the {@link RolesAllowedRequestFilter}, which performs the
+ * role based authorization.
+ *
+ * @author Benjamin Kastelic
  * @since 1.0.0
  */
 @Provider
