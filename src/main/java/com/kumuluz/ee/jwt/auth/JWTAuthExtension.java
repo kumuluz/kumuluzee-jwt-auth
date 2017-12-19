@@ -18,23 +18,35 @@
  *  software. See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.kumuluz.ee.jwt.auth.cdi;
+package com.kumuluz.ee.jwt.auth;
 
-import org.eclipse.microprofile.jwt.JsonWebToken;
+import com.kumuluz.ee.common.Extension;
+import com.kumuluz.ee.common.config.EeConfig;
+import com.kumuluz.ee.common.dependencies.*;
+import com.kumuluz.ee.common.wrapper.KumuluzServerWrapper;
 
-import javax.enterprise.context.RequestScoped;
-import javax.enterprise.inject.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.SecurityContext;
+import java.util.logging.Logger;
 
-@RequestScoped
-public class JsonWebTokenProducer {
+/**
+ * @author Benjamin Kastelic
+ */
+@EeExtensionDef(name = "jwt-auth", group = EeExtensionGroup.SECURITY)
+@EeComponentDependencies({
+        @EeComponentDependency(EeComponentType.CDI),
+        @EeComponentDependency(EeComponentType.JSON_P),
+        @EeComponentDependency(EeComponentType.JAX_WS)
+})
+public class JWTAuthExtension implements Extension {
 
-    @Context
-    private SecurityContext securityContext;
+    private static final Logger log = Logger.getLogger(JWTAuthExtension.class.getName());
 
-    @Produces
-    public JsonWebToken getJWTPrincipal() {
-        return (JsonWebToken) securityContext.getUserPrincipal();
+    @Override
+    public void init(KumuluzServerWrapper kumuluzServerWrapper, EeConfig eeConfig) {
+        log.info("Initialising JWT auth extension.");
+    }
+
+    @Override
+    public void load() {
+        log.info("Initialised JWT auth extension.");
     }
 }

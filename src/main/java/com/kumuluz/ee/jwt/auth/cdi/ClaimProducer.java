@@ -1,3 +1,23 @@
+/*
+ *  Copyright (c) 2014-2017 Kumuluz and/or its affiliates
+ *  and other contributors as indicated by the @author tags and
+ *  the contributor list.
+ *
+ *  Licensed under the MIT License (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  https://opensource.org/licenses/MIT
+ *
+ *  The software is provided "AS IS", WITHOUT WARRANTY OF ANY KIND, express or
+ *  implied, including but not limited to the warranties of merchantability,
+ *  fitness for a particular purpose and noninfringement. in no event shall the
+ *  authors or copyright holders be liable for any claim, damages or other
+ *  liability, whether in an action of contract, tort or otherwise, arising from,
+ *  out of or in connection with the software or the use or other dealings in the
+ *  software. See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
 package com.kumuluz.ee.jwt.auth.cdi;
 
 import org.eclipse.microprofile.jwt.Claim;
@@ -50,7 +70,7 @@ public class ClaimProducer {
     }
     // endregion
 
-    // region Json types - JsonString, JsonArray, JsonNumber, JsonValue
+    // region Json types - JsonString, JsonArray, JsonNumber, JsonObject
     @Produces
     @Claim
     public JsonString getClaimAsJsonString(InjectionPoint injectionPoint) {
@@ -82,15 +102,11 @@ public class ClaimProducer {
                 .getJsonNumber("tmp");
     }
 
-//    @Produces
-//    @Claim
-//    public JsonValue getClaimAsJsonValue(InjectionPoint injectionPoint) {
-//        Boolean claim = getClaimAsBoolean(injectionPoint);
-//        return Json.createObjectBuilder()
-//                .add("tmp", claim)
-//                .build()
-//                .get("tmp");
-//    }
+    @Produces
+    @Claim
+    public JsonObject getClaimAsJsonObject(InjectionPoint injectionPoint) {
+        return getClaim(injectionPoint);
+    }
     // endregion
 
     // region Optional basic types - Optional<String>, Optional<Set<String>>, Optional<Long>, Optional<Boolean>
@@ -123,7 +139,7 @@ public class ClaimProducer {
     }
     // endregion
 
-    // region Optional Json types - Optional<JsonString>, Optional<JsonArray>, Optional<JsonNumber>, Optional<JsonValue>
+    // region Optional Json types - Optional<JsonString>, Optional<JsonArray>, Optional<JsonNumber>, Optional<JsonObject>
     @Produces
     @Claim
     public Optional<JsonString> getClaimAsOptionalJsonString(InjectionPoint injectionPoint) {
@@ -145,12 +161,12 @@ public class ClaimProducer {
         return Optional.ofNullable(claim);
     }
 
-//    @Produces
-//    @Claim
-//    public Optional<JsonValue> getClaimAsOptionalJsonValue(InjectionPoint injectionPoint) {
-//        JsonValue claim = getClaimAsJsonValue(injectionPoint);
-//        return Optional.ofNullable(claim);
-//    }
+    @Produces
+    @Claim
+    public Optional<JsonObject> getClaimAsOptionalJsonObject(InjectionPoint injectionPoint) {
+        JsonObject claim = getClaimAsJsonObject(injectionPoint);
+        return Optional.ofNullable(claim);
+    }
     // endregion
 
     // region ClaimValue basic types - ClaimValue<String>, ClaimValue<Set<String>>, ClaimValue<Long>, ClaimValue<Boolean>
@@ -231,7 +247,7 @@ public class ClaimProducer {
     }
     // endregion
 
-    // region ClaimValue Json types - ClaimValue<JsonString>, ClaimValue<JsonArray>, ClaimValue<JsonNumber>, ClaimValue<JsonValue>
+    // region ClaimValue Json types - ClaimValue<JsonString>, ClaimValue<JsonArray>, ClaimValue<JsonNumber>, ClaimValue<JsonObject>
     @Produces
     @Claim
     public ClaimValue<JsonString> getClaimAsClaimValueJsonString(InjectionPoint injectionPoint) {
@@ -289,24 +305,24 @@ public class ClaimProducer {
         };
     }
 
-//    @Produces
-//    @Claim
-//    public ClaimValue<JsonValue> getClaimAsClaimValueJsonValue(InjectionPoint injectionPoint) {
-//        String claimName = getClaimName(injectionPoint);
-//        JsonValue claim = getClaimAsJsonValue(injectionPoint);
-//
-//        return new ClaimValue<JsonValue>() {
-//            @Override
-//            public String getName() {
-//                return claimName;
-//            }
-//
-//            @Override
-//            public JsonValue getValue() {
-//                return claim;
-//            }
-//        };
-//    }
+    @Produces
+    @Claim
+    public ClaimValue<JsonObject> getClaimAsClaimValueJsonObject(InjectionPoint injectionPoint) {
+        String claimName = getClaimName(injectionPoint);
+        JsonObject claim = getClaimAsJsonObject(injectionPoint);
+
+        return new ClaimValue<JsonObject>() {
+            @Override
+            public String getName() {
+                return claimName;
+            }
+
+            @Override
+            public JsonObject getValue() {
+                return claim;
+            }
+        };
+    }
     // endregion
 
     // region ClaimValue optional basic types - ClaimValue<Optional<String>>, ClaimValue<Optional<Set<String>>>, ClaimValue<Optional<Long>>, ClaimValue<Optional<Boolean>>
@@ -445,24 +461,24 @@ public class ClaimProducer {
         };
     }
 
-//    @Produces
-//    @Claim
-//    public ClaimValue<Optional<JsonValue>> getClaimAsClaimValueOptionalJsonValue(InjectionPoint injectionPoint) {
-//        String claimName = getClaimName(injectionPoint);
-//        Optional<JsonValue> claim = getClaimAsOptionalJsonValue(injectionPoint);
-//
-//        return new ClaimValue<Optional<JsonValue>>() {
-//            @Override
-//            public String getName() {
-//                return claimName;
-//            }
-//
-//            @Override
-//            public Optional<JsonValue> getValue() {
-//                return claim;
-//            }
-//        };
-//    }
+    @Produces
+    @Claim
+    public ClaimValue<Optional<JsonObject>> getClaimAsClaimValueOptionalJsonObject(InjectionPoint injectionPoint) {
+        String claimName = getClaimName(injectionPoint);
+        Optional<JsonObject> claim = getClaimAsOptionalJsonObject(injectionPoint);
+
+        return new ClaimValue<Optional<JsonObject>>() {
+            @Override
+            public String getName() {
+                return claimName;
+            }
+
+            @Override
+            public Optional<JsonObject> getValue() {
+                return claim;
+            }
+        };
+    }
     // endregion
 
     private <T> T getClaim(InjectionPoint injectionPoint) {
