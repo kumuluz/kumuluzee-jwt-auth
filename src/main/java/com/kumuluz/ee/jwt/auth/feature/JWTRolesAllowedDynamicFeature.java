@@ -65,6 +65,7 @@ public class JWTRolesAllowedDynamicFeature implements DynamicFeature {
                                     .header(HttpHeaders.WWW_AUTHENTICATE, "Bearer realm=\"MP-JWT\"")
                                     .build()
                     );
+                    return;
                 }
 
                 for (String role : this.rolesAllowed) {
