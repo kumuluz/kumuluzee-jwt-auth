@@ -47,7 +47,7 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 import javax.ws.rs.core.SecurityContext;
 
 @Context
-private SecurityContext sc;:
+private SecurityContext sc;
 
 ...
 
