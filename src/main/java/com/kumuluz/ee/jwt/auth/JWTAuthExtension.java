@@ -34,7 +34,7 @@ import java.util.logging.Logger;
 @EeComponentDependencies({
         @EeComponentDependency(EeComponentType.CDI),
         @EeComponentDependency(EeComponentType.JSON_P),
-        @EeComponentDependency(EeComponentType.JAX_WS)
+        @EeComponentDependency(EeComponentType.JAX_RS)
 })
 public class JWTAuthExtension implements Extension {
 
