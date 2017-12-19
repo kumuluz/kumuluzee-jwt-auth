@@ -23,6 +23,7 @@ package com.kumuluz.ee.jwt.auth.validator;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.kumuluz.ee.jwt.auth.cdi.JWTContextInfo;
@@ -40,10 +41,16 @@ import java.util.Map;
  */
 public class JWTValidator {
 
-    public static JWTPrincipal validateToken(String token, JWTContextInfo jwtContextInfo) {
+    public static JWTPrincipal validateToken(String token, JWTContextInfo jwtContextInfo) throws JWTValidationException {
         Algorithm algorithm = Algorithm.RSA256(jwtContextInfo.getDecodedPublicKey(), null);
         JWTVerifier verifier = JWT.require(algorithm).withIssuer(jwtContextInfo.getIssuer()).build();
-        DecodedJWT jwt = verifier.verify(token);
+
+        DecodedJWT jwt;
+        try {
+            jwt = verifier.verify(token);
+        } catch (JWTVerificationException e) {
+            throw new JWTValidationException("Failed to validate token.", e);
+        }
 
         String name = ClaimHelper.getClaim(Claims.upn.name(), jwt.getClaims()).asString();
         if (name == null) {

@@ -23,6 +23,7 @@ package com.kumuluz.ee.jwt.auth.filter;
 import com.kumuluz.ee.jwt.auth.cdi.JWTContextInfo;
 import com.kumuluz.ee.jwt.auth.context.JWTSecurityContext;
 import com.kumuluz.ee.jwt.auth.principal.JWTPrincipal;
+import com.kumuluz.ee.jwt.auth.validator.JWTValidationException;
 import com.kumuluz.ee.jwt.auth.validator.JWTValidator;
 
 import javax.annotation.Priority;
@@ -32,6 +33,7 @@ import javax.ws.rs.Priorities;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.PreMatching;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.ext.Provider;
@@ -65,21 +67,36 @@ public class JWTAuthorizationFilter implements ContainerRequestFilter {
             authorization = requestContext.getHeaderString(AUTHORIZATION_HEADER);
         }
 
-        if (authorization != null && authorization.startsWith("Bearer")) {
-            try {
-                String token = authorization.substring(7);
-                JWTPrincipal jwtPrincipal = validateToken(token, jwtContextInfo);
-                final SecurityContext securityContext = requestContext.getSecurityContext();
-                JWTSecurityContext jwtSecurityContext = new JWTSecurityContext(securityContext, jwtPrincipal);
-                requestContext.setSecurityContext(jwtSecurityContext);
-            } catch (Exception e) {
-                LOG.fine("Authentication failed: " + e.getMessage());
-                requestContext.abortWith(Response.status(Response.Status.UNAUTHORIZED).build());
+        if (authorization != null) {
+            if (authorization.startsWith("Bearer")) {
+                try {
+                    String token = authorization.substring(7);
+                    JWTPrincipal jwtPrincipal = validateToken(token, jwtContextInfo);
+                    final SecurityContext securityContext = requestContext.getSecurityContext();
+                    JWTSecurityContext jwtSecurityContext = new JWTSecurityContext(securityContext, jwtPrincipal);
+                    requestContext.setSecurityContext(jwtSecurityContext);
+                } catch (Exception e) {
+                    LOG.fine("Authentication failed: " + e.getMessage());
+                    requestContext.abortWith(
+                            Response
+                                    .status(Response.Status.UNAUTHORIZED)
+                                    .header(HttpHeaders.WWW_AUTHENTICATE, "Bearer realm=\"MP-JWT\"")
+                                    .build()
+                    );
+                }
+            } else {
+                LOG.fine("Authentication failed due to missing Authorization bearer token.");
+                requestContext.abortWith(
+                        Response
+                                .status(Response.Status.UNAUTHORIZED)
+                                .header(HttpHeaders.WWW_AUTHENTICATE, "Bearer realm=\"MP-JWT\"")
+                                .build()
+                );
             }
         }
     }
 
-    private JWTPrincipal validateToken(String token, JWTContextInfo jwtContextInfo) {
+    private JWTPrincipal validateToken(String token, JWTContextInfo jwtContextInfo) throws JWTValidationException {
         return JWTValidator.validateToken(token, jwtContextInfo);
     }
 }
