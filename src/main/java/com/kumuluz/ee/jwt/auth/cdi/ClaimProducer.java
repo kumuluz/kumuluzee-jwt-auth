@@ -490,7 +490,9 @@ public class ClaimProducer {
     private <T> T getClaim(InjectionPoint injectionPoint) {
         validateClaim(injectionPoint);
         String claimName = getClaimName(injectionPoint);
-        return callerPrincipal.getClaim(claimName);
+        return callerPrincipal != null
+                ? callerPrincipal.getClaim(claimName)
+                : null;
     }
 
     private void validateClaim(InjectionPoint injectionPoint) {
