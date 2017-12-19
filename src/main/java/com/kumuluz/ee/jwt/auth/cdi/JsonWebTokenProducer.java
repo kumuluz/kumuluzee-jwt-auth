@@ -27,6 +27,12 @@ import javax.enterprise.inject.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
 
+/**
+ * MP-JWT principal producer.
+ *
+ * @author Benjamin Kastelic
+ * @since 1.0.0
+ */
 @RequestScoped
 public class JsonWebTokenProducer {
 

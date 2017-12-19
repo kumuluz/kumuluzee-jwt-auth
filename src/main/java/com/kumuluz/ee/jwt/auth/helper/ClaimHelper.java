@@ -25,6 +25,12 @@ import com.auth0.jwt.interfaces.Claim;
 
 import java.util.Map;
 
+/**
+ * Helper class for extracting claims.
+ *
+ * @author Benjamin Kastelic
+ * @since 1.0.0
+ */
 public class ClaimHelper {
 
     public static Claim getClaim(String name, Map<String, Claim> claims) {

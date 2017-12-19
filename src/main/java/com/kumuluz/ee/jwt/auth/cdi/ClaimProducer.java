@@ -37,6 +37,12 @@ import javax.json.*;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Claims producer.
+ *
+ * @author Benjamin Kastelic
+ * @since 1.0.0
+ */
 @Dependent
 public class ClaimProducer {
 

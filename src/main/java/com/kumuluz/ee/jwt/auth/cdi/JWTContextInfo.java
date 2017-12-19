@@ -29,6 +29,12 @@ import java.security.KeyFactory;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.X509EncodedKeySpec;
 
+/**
+ * MP-JWT configuration settings
+ *
+ * @author Benjamin Kastelic
+ * @since 1.0.0
+ */
 @ApplicationScoped
 @ConfigBundle("kumuluzee.jwt-auth")
 public class JWTContextInfo {

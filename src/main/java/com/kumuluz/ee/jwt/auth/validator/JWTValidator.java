@@ -32,6 +32,12 @@ import org.eclipse.microprofile.jwt.Claims;
 
 import java.util.Map;
 
+/**
+ * Validates the authorization token and creates a principal if authentication was successful.
+ *
+ * @author Benjamin Kastelic
+ * @since 1.0.0
+ */
 public class JWTValidator {
 
     public static JWTPrincipal validateToken(String token, JWTContextInfo jwtContextInfo) {

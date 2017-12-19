@@ -38,6 +38,9 @@ import javax.ws.rs.ext.Provider;
 import java.util.logging.Logger;
 
 /**
+ * MP-JWT entry point.
+ * Check is authorization header is present and performs token validation and parsing.
+ *
  * @author Benjamin Kastelic
  * @since 1.0.0
  */

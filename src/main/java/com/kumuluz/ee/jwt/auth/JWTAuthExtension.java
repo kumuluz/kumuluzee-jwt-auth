@@ -28,7 +28,10 @@ import com.kumuluz.ee.common.wrapper.KumuluzServerWrapper;
 import java.util.logging.Logger;
 
 /**
+ * KumuluzEE extension definition.
+ *
  * @author Benjamin Kastelic
+ * @since 1.0.0
  */
 @EeExtensionDef(name = "jwt-auth", group = EeExtensionGroup.SECURITY)
 @EeComponentDependencies({

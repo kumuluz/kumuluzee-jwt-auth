@@ -28,6 +28,12 @@ import javax.json.*;
 import java.util.*;
 import java.util.logging.Logger;
 
+/**
+ * MP-JWT principal implementation.
+ *
+ * @author Benjamin Kastelic
+ * @since 1.0.0
+ */
 public class JWTPrincipal implements JsonWebToken {
 
     private static final Logger LOG = Logger.getLogger(JWTPrincipal.class.getName());

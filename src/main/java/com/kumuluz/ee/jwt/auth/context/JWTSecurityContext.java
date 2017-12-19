@@ -25,6 +25,12 @@ import org.eclipse.microprofile.jwt.JsonWebToken;
 import javax.ws.rs.core.SecurityContext;
 import java.security.Principal;
 
+/**
+ * MP-JWT security context implementation
+ *
+ * @author Benjamin Kastelic
+ * @since 1.0.0
+ */
 public class JWTSecurityContext implements SecurityContext {
 
     private SecurityContext delegate;
