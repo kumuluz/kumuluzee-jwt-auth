@@ -74,13 +74,11 @@ public class ClaimProducer {
     public Long getClaimAsLong(InjectionPoint injectionPoint) {
         Number claim = getClaim(injectionPoint);
 
-        if (claim instanceof Long || claim instanceof Integer) {
-            claim.longValue();
-        } else if (claim instanceof Double || claim instanceof Float) {
-            claim.doubleValue();
+        if (claim == null) {
+            return null;
         }
 
-        return null;
+        return claim.longValue();
     }
 
     @Produces

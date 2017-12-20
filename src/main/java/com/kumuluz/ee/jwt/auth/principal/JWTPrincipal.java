@@ -76,6 +76,28 @@ public class JWTPrincipal implements JsonWebToken {
         return null;
     }
 
+    @Override
+    public long getExpirationTime() {
+        Number expirationType = (Number) convertedClaims.get(Claims.exp.name());
+
+        if (expirationType == null) {
+            return 0;
+        }
+
+        return expirationType.longValue();
+    }
+
+    @Override
+    public long getIssuedAtTime() {
+        Number expirationType = (Number) convertedClaims.get(Claims.iat.name());
+
+        if (expirationType == null) {
+            return 0;
+        }
+
+        return expirationType.longValue();
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public Set<String> getGroups() {
