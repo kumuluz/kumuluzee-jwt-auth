@@ -20,6 +20,7 @@
  */
 package com.kumuluz.ee.jwt.auth.cdi;
 
+import com.kumuluz.ee.jwt.auth.principal.JWTPrincipal;
 import org.eclipse.microprofile.jwt.Claim;
 import org.eclipse.microprofile.jwt.ClaimValue;
 import org.eclipse.microprofile.jwt.Claims;
@@ -34,7 +35,8 @@ import javax.enterprise.inject.spi.DeploymentException;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.inject.Inject;
 import javax.json.*;
-import java.util.*;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -53,27 +55,33 @@ public class ClaimProducer {
     @Produces
     @Claim
     public String getClaimAsString(InjectionPoint injectionPoint) {
-        return getClaim(injectionPoint);
+        JsonString claim = getClaim(injectionPoint);
+        if (claim == null) {
+            return null;
+        }
+
+        return claim.getString();
     }
 
     @SuppressWarnings("unchecked")
     @Produces
     @Claim
     public Set<String> getClaimAsStringSet(InjectionPoint injectionPoint) {
-        Collection claim = getClaim(injectionPoint);
-
+        JsonArray claim = getClaim(injectionPoint);
         if (claim == null) {
             return null;
         }
 
-        return (Set) claim.stream().collect(Collectors.toSet());
+        return claim.getValuesAs(JsonString.class)
+                .stream()
+                .map(JsonString::getString)
+                .collect(Collectors.toSet());
     }
 
     @Produces
     @Claim
     public Long getClaimAsLong(InjectionPoint injectionPoint) {
-        Number claim = getClaim(injectionPoint);
-
+        JsonNumber claim = getClaim(injectionPoint);
         if (claim == null) {
             return null;
         }
@@ -84,7 +92,18 @@ public class ClaimProducer {
     @Produces
     @Claim
     public Boolean getClaimAsBoolean(InjectionPoint injectionPoint) {
-        return getClaim(injectionPoint);
+        JsonValue claim = getClaim(injectionPoint);
+        if (claim == null) {
+            return null;
+        }
+
+        if (claim.getValueType().equals(JsonValue.ValueType.TRUE)) {
+            return Boolean.TRUE;
+        } else if (claim.getValueType().equals(JsonValue.ValueType.TRUE)) {
+            return Boolean.FALSE;
+        }
+
+        return null;
     }
     // endregion
 
@@ -92,32 +111,25 @@ public class ClaimProducer {
     @Produces
     @Claim
     public JsonString getClaimAsJsonString(InjectionPoint injectionPoint) {
-        String claim = getClaimAsString(injectionPoint);
-        return Json.createObjectBuilder()
-                .add("tmp", claim)
-                .build()
-                .getJsonString("tmp");
+        return getClaim(injectionPoint);
     }
 
     @Produces
     @Claim
     public JsonArray getClaimAsJsonArray(InjectionPoint injectionPoint) {
-        Collection claim = getClaim(injectionPoint);
-        return convertCollection(claim);
+        return getClaim(injectionPoint);
     }
 
     @Produces
     @Claim
     public JsonNumber getClaimAsJsonNumber(InjectionPoint injectionPoint) {
-        Number claim = getClaim(injectionPoint);
-        return convertNumber(claim);
+        return getClaim(injectionPoint);
     }
 
     @Produces
     @Claim
     public JsonObject getClaimAsJsonObject(InjectionPoint injectionPoint) {
-        Map claim = getClaim(injectionPoint);
-        return convertMap(claim);
+        return getClaim(injectionPoint);
     }
     // endregion
 
@@ -497,7 +509,7 @@ public class ClaimProducer {
         validateClaim(injectionPoint);
         String claimName = getClaimName(injectionPoint);
         return callerPrincipal != null
-                ? callerPrincipal.getClaim(claimName)
+                ? ((JWTPrincipal) callerPrincipal).getClaimForInjection(claimName)
                 : null;
     }
 
@@ -540,77 +552,5 @@ public class ClaimProducer {
         }
 
         return claimName;
-    }
-
-    private JsonArray convertCollection(Collection list) {
-        return (JsonArray) wrapValue(list);
-    }
-
-    private JsonNumber convertNumber(Number number) {
-        return (JsonNumber) wrapValue(number);
-    }
-
-    @SuppressWarnings("unchecked")
-    private JsonObject convertMap(Map<String, Object> map) {
-        JsonObjectBuilder builder = Json.createObjectBuilder();
-        for(Map.Entry<String,Object> entry : map.entrySet()) {
-            Object entryValue = entry.getValue();
-            if(entryValue instanceof Map) {
-                JsonObject entryJsonObject = convertMap((Map<String, Object>) entryValue);
-                builder.add(entry.getKey(), entryJsonObject);
-            } else if(entryValue instanceof List) {
-                JsonArray array = (JsonArray) wrapValue(entryValue);
-                builder.add(entry.getKey(), array);
-            } else if(entryValue instanceof Long || entryValue instanceof Integer) {
-                long lvalue = ((Number) entryValue).longValue();
-                builder.add(entry.getKey(), lvalue);
-            } else if(entryValue instanceof Double || entryValue instanceof Float) {
-                double dvalue = ((Number) entryValue).doubleValue();
-                builder.add(entry.getKey(), dvalue);
-            } else if(entryValue instanceof Boolean) {
-                boolean flag = (Boolean) entryValue;
-                builder.add(entry.getKey(), flag);
-            } else if(entryValue instanceof String) {
-                builder.add(entry.getKey(), entryValue.toString());
-            }
-        }
-        return builder.build();
-    }
-
-    private JsonValue wrapValue(Object value) {
-        JsonValue jsonValue = null;
-        if(value instanceof Number) {
-            Number number = (Number) value;
-            if((number instanceof Long) || (number instanceof Integer)) {
-                jsonValue = Json.createObjectBuilder()
-                        .add("tmp", number.longValue())
-                        .build()
-                        .getJsonNumber("tmp");
-            } else {
-                jsonValue = Json.createObjectBuilder()
-                        .add("tmp", number.doubleValue())
-                        .build()
-                        .getJsonNumber("tmp");
-            }
-        }
-        else if(value instanceof Boolean) {
-            Boolean flag = (Boolean) value;
-            jsonValue = flag ? JsonValue.TRUE : JsonValue.FALSE;
-        }
-        else if(value instanceof Collection) {
-            JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-            Collection collection = (Collection) value;
-            for(Object element : collection) {
-                if(element instanceof String) {
-                    arrayBuilder.add(element.toString());
-                }
-                else {
-                    JsonValue jvalue = wrapValue(element);
-                    arrayBuilder.add(jvalue);
-                }
-            }
-            jsonValue = arrayBuilder.build();
-        }
-        return jsonValue;
     }
 }

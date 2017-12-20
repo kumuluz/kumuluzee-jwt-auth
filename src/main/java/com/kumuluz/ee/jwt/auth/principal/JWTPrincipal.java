@@ -21,11 +21,17 @@
 package com.kumuluz.ee.jwt.auth.principal;
 
 import com.auth0.jwt.interfaces.Claim;
+import com.kumuluz.ee.jwt.auth.helper.ClaimHelper;
 import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonNumber;
+import javax.json.JsonString;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * MP-JWT principal implementation.
@@ -41,6 +47,7 @@ public class JWTPrincipal implements JsonWebToken {
     private String token;
     private Map<String, Claim> originalClaims;
     private Map<String, Object> convertedClaims;
+    private Map<String, Object> jsonClaims;
 
     public JWTPrincipal(String name, String token, Map<String, Claim> originalClaims) {
         this.name = name;
@@ -57,28 +64,69 @@ public class JWTPrincipal implements JsonWebToken {
 
     @Override
     public Set<String> getClaimNames() {
-        return convertedClaims.keySet();
+        return jsonClaims.keySet();
+    }
+
+    @Override
+    public String getSubject() {
+        JsonString subject = (JsonString) jsonClaims.get(Claims.sub.name());
+        if (subject == null) {
+            return null;
+        }
+
+        return subject.getString();
+    }
+
+    @Override
+    public String getTokenID() {
+        JsonString tokenId = (JsonString) jsonClaims.get(Claims.jti.name());
+        if (tokenId == null) {
+            return null;
+        }
+
+        return tokenId.getString();
+    }
+
+    @Override
+    public String getIssuer() {
+        JsonString issuer = (JsonString) jsonClaims.get(Claims.iss.name());
+        if (issuer == null) {
+            return null;
+        }
+
+        return issuer.getString();
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public Set<String> getAudience() {
-        String audience = (String) convertedClaims.get(Claims.aud.name());
+        JsonString audience = (JsonString) jsonClaims.get(Claims.aud.name());
         if (audience != null) {
-            return Collections.singleton(audience);
+            return Collections.singleton(audience.getString());
         }
 
-        List<String> audienceList = (List<String>) convertedClaims.get(Claims.aud.name());
-        if (audienceList != null) {
-            return new HashSet<>(audienceList);
+        JsonArray audienceArray = (JsonArray) jsonClaims.get(Claims.aud.name());
+        if (audienceArray != null) {
+            return audienceArray.getValuesAs(JsonString.class).stream().map(JsonString::getString).collect(Collectors.toSet());
         }
 
         return null;
     }
 
+    private JsonArray getAudienceAsJsonArray() {
+        JsonString audience = (JsonString) jsonClaims.get(Claims.aud.name());
+        if (audience != null) {
+            return Json.createArrayBuilder()
+                    .add(audience.getString())
+                    .build();
+        }
+
+        return (JsonArray) jsonClaims.get(Claims.aud.name());
+    }
+
     @Override
     public long getExpirationTime() {
-        Number expirationType = (Number) convertedClaims.get(Claims.exp.name());
+        JsonNumber expirationType = (JsonNumber) jsonClaims.get(Claims.exp.name());
 
         if (expirationType == null) {
             return 0;
@@ -89,25 +137,35 @@ public class JWTPrincipal implements JsonWebToken {
 
     @Override
     public long getIssuedAtTime() {
-        Number expirationType = (Number) convertedClaims.get(Claims.iat.name());
+        JsonNumber issuedAtTime = (JsonNumber) jsonClaims.get(Claims.iat.name());
 
-        if (expirationType == null) {
+        if (issuedAtTime == null) {
             return 0;
         }
 
-        return expirationType.longValue();
+        return issuedAtTime.longValue();
+    }
+
+    @Override
+    public String getRawToken() {
+        JsonString rawToken = (JsonString) jsonClaims.get(Claims.raw_token.name());
+        if (rawToken == null) {
+            return null;
+        }
+
+        return rawToken.getString();
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public Set<String> getGroups() {
-        List<String> groupList = (List<String>) convertedClaims.get(Claims.groups.name());
+        JsonArray groupList = (JsonArray) jsonClaims.get(Claims.groups.name());
 
         if (groupList == null) {
             return null;
         }
 
-        return new HashSet<>(groupList);
+        return groupList.getValuesAs(JsonString.class).stream().map(JsonString::getString).collect(Collectors.toSet());
     }
 
     @SuppressWarnings("unchecked")
@@ -121,14 +179,22 @@ public class JWTPrincipal implements JsonWebToken {
             // ignore
         }
 
-        if (claimType.equals(Claims.UNKNOWN) && !convertedClaims.containsKey(claimName)) {
+        if (claimType.equals(Claims.UNKNOWN) && !jsonClaims.containsKey(claimName)) {
             LOG.fine(String.format("No claim with name '%s' found.", claimName));
             return null;
         }
 
         switch (claimType) {
+            case sub:
+                return (T) getSubject();
             case exp:
+                return (T) (Long) getExpirationTime();
             case iat:
+                return (T) (Long) getIssuedAtTime();
+            case jti:
+                return (T) getTokenID();
+            case iss:
+                return (T) getIssuer();
             case auth_time:
             case nbf:
             case updated_at:
@@ -144,10 +210,37 @@ public class JWTPrincipal implements JsonWebToken {
                 claim = (T) getAudience();
                 break;
             case UNKNOWN:
-                claim = (T) convertedClaims.get(claimName);
-                break;
             default:
-                claim = (T) convertedClaims.get(claimName);
+                claim = (T) jsonClaims.get(claimName);
+                if (claim instanceof JsonString) {
+                    claim = (T) ((JsonString) claim).getString();
+                }
+        }
+
+        return claim;
+    }
+
+    public <T> T getClaimForInjection(String claimName) {
+        Claims claimType = Claims.UNKNOWN;
+        T claim = null;
+        try {
+            claimType = Claims.valueOf(claimName);
+        } catch (IllegalArgumentException e) {
+            // ignore
+        }
+
+        if (claimType.equals(Claims.UNKNOWN) && !jsonClaims.containsKey(claimName)) {
+            LOG.fine(String.format("No claim with name '%s' found.", claimName));
+            return null;
+        }
+
+        switch (claimType) {
+            case aud:
+                claim = (T) getAudienceAsJsonArray();
+                break;
+            case UNKNOWN:
+            default:
+                claim = (T) jsonClaims.get(claimName);
         }
 
         return claim;
@@ -155,6 +248,7 @@ public class JWTPrincipal implements JsonWebToken {
 
     private void convertClaims() {
         convertedClaims = new HashMap<>();
+        jsonClaims = new HashMap<>();
 
         Object claimValue;
         for (Map.Entry<String, Claim> entry : originalClaims.entrySet()) {
@@ -172,5 +266,27 @@ public class JWTPrincipal implements JsonWebToken {
         }
 
         convertedClaims.put(Claims.raw_token.name(), token);
+
+        for(String claimName : originalClaims.keySet()) {
+            Object claim = convertedClaims.get(claimName);
+            if (claim instanceof String) {
+                String str = (String) claim;
+                jsonClaims.put(claimName, ClaimHelper.convertString(str));
+            } else if (claim instanceof Boolean) {
+                Boolean bool = (Boolean) claim;
+                jsonClaims.put(claimName, ClaimHelper.convertBoolean(bool));
+            } else if(claim instanceof List) {
+                Collection collection = (Collection) claim;
+                jsonClaims.put(claimName, ClaimHelper.convertCollection(collection));
+            } else if(claim instanceof Map) {
+                Map map = (Map) claim;
+                jsonClaims.put(claimName, ClaimHelper.convertMap(map));
+            } else if(claim instanceof Number) {
+                Number number = (Number) claim;
+                jsonClaims.put(claimName, ClaimHelper.convertNumber(number));
+            }
+        }
+
+        jsonClaims.put(Claims.raw_token.name(), ClaimHelper.convertString(token));
     }
 }
