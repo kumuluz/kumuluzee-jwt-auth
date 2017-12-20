@@ -24,7 +24,6 @@ import com.auth0.jwt.interfaces.Claim;
 import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 
-import javax.json.*;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -74,7 +73,7 @@ public class JWTPrincipal implements JsonWebToken {
             return new HashSet<>(audienceList);
         }
 
-        return new HashSet<>();
+        return null;
     }
 
     @SuppressWarnings("unchecked")
@@ -82,9 +81,11 @@ public class JWTPrincipal implements JsonWebToken {
     public Set<String> getGroups() {
         List<String> groupList = (List<String>) convertedClaims.get(Claims.groups.name());
 
-        return groupList != null
-                ? new HashSet<>(groupList)
-                : new HashSet<>();
+        if (groupList == null) {
+            return null;
+        }
+
+        return new HashSet<>(groupList);
     }
 
     @SuppressWarnings("unchecked")
@@ -139,8 +140,8 @@ public class JWTPrincipal implements JsonWebToken {
                 convertedClaims.put(entry.getKey(), claimValue);
             } else if ((claimValue = entry.getValue().asList(Object.class)) != null) {
                 convertedClaims.put(entry.getKey(), claimValue);
-            } else if ((claimValue = entry.getValue().asLong()) != null) {
-                convertedClaims.put(entry.getKey(), claimValue);
+            } else if (entry.getValue().asDouble() != null || entry.getValue().asLong() != null || entry.getValue().asInt() != null) {
+                convertedClaims.put(entry.getKey(), entry.getValue().as(Number.class));
             } else if ((claimValue = entry.getValue().asMap()) != null) {
                 convertedClaims.put(entry.getKey(), claimValue);
             } else if ((claimValue = entry.getValue().asString()) != null) {
@@ -148,109 +149,6 @@ public class JWTPrincipal implements JsonWebToken {
             }
         }
 
-        Set<String> customClaimNames = getCustomClaimNames(convertedClaims.keySet());
-        for(String claimName : customClaimNames) {
-            Object claim = convertedClaims.get(claimName);
-            if(claim instanceof List) {
-                convertList(claimName);
-            } else if(claim instanceof Map) {
-                convertMap(claimName);
-            } else if(claim instanceof Number) {
-                convertNumber(claimName);
-            }
-        }
-
         convertedClaims.put(Claims.raw_token.name(), token);
-    }
-
-    private void convertList(String claimName) {
-        List list = (List) convertedClaims.get(claimName);
-        JsonArray jsonArray = (JsonArray) wrapValue(list);
-        convertedClaims.put(claimName, jsonArray);
-    }
-
-    @SuppressWarnings("unchecked")
-    private void convertMap(String claimName) {
-        Map map = (Map) convertedClaims.get(claimName);
-        JsonObject jsonObject = convertMap(map);
-        convertedClaims.put(claimName, jsonObject);
-    }
-
-    private void convertNumber(String claimName) {
-        Number number = (Number) convertedClaims.get(claimName);
-        JsonNumber jsonNumber = (JsonNumber) wrapValue(number);
-        convertedClaims.put(claimName, jsonNumber);
-    }
-
-    @SuppressWarnings("unchecked")
-    private JsonObject convertMap(Map<String, Object> map) {
-        JsonObjectBuilder builder = Json.createObjectBuilder();
-        for(Map.Entry<String,Object> entry : map.entrySet()) {
-            Object entryValue = entry.getValue();
-            if(entryValue instanceof Map) {
-                JsonObject entryJsonObject = convertMap((Map<String, Object>) entryValue);
-                builder.add(entry.getKey(), entryJsonObject);
-            } else if(entryValue instanceof List) {
-                JsonArray array = (JsonArray) wrapValue(entryValue);
-                builder.add(entry.getKey(), array);
-            } else if(entryValue instanceof Long || entryValue instanceof Integer) {
-                long lvalue = ((Number) entryValue).longValue();
-                builder.add(entry.getKey(), lvalue);
-            } else if(entryValue instanceof Double || entryValue instanceof Float) {
-                double dvalue = ((Number) entryValue).doubleValue();
-                builder.add(entry.getKey(), dvalue);
-            } else if(entryValue instanceof Boolean) {
-                boolean flag = (Boolean) entryValue;
-                builder.add(entry.getKey(), flag);
-            } else if(entryValue instanceof String) {
-                builder.add(entry.getKey(), entryValue.toString());
-            }
-        }
-        return builder.build();
-    }
-
-    private JsonValue wrapValue(Object value) {
-        JsonValue jsonValue = null;
-        if(value instanceof Number) {
-            Number number = (Number) value;
-            if((number instanceof Long) || (number instanceof Integer)) {
-                jsonValue = Json.createObjectBuilder()
-                        .add("tmp", number.longValue())
-                        .build()
-                        .getJsonNumber("tmp");
-            } else {
-                jsonValue = Json.createObjectBuilder()
-                        .add("tmp", number.doubleValue())
-                        .build()
-                        .getJsonNumber("tmp");
-            }
-        }
-        else if(value instanceof Boolean) {
-            Boolean flag = (Boolean) value;
-            jsonValue = flag ? JsonValue.TRUE : JsonValue.FALSE;
-        }
-        else if(value instanceof List) {
-            JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-            List list = (List) value;
-            for(Object element : list) {
-                if(element instanceof String) {
-                    arrayBuilder.add(element.toString());
-                }
-                else {
-                    JsonValue jvalue = wrapValue(element);
-                    arrayBuilder.add(jvalue);
-                }
-            }
-            jsonValue = arrayBuilder.build();
-        }
-        return jsonValue;
-    }
-
-    private Set<String> getCustomClaimNames(Collection<String> claimNames) {
-        HashSet<String> customNames = new HashSet<>(claimNames);
-        for(Claims claim : Claims.values()) {
-            customNames.remove(claim.name());
-        }
-        return customNames;
     }
 }
