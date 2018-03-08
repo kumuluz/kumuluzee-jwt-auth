@@ -51,7 +51,7 @@ private SecurityContext sc;
 
 ...
 
-JsonWebToken principal = securityContext.getUserPrincipal();
+JsonWebToken principal = sc.getUserPrincipal();
 
 ...
 ```  
