@@ -13,7 +13,7 @@ You can enable KumuluzEE JWT Authentication support by adding the following depe
 <dependency>
     <groupId>com.kumuluz.ee.jwt</groupId>
     <artifactId>kumuluzee-jwt-auth</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>${kumuluzee-jwt-auth.version}</version>
 </dependency>
 ```
 
