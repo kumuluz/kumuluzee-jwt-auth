@@ -17,11 +17,29 @@ You can enable KumuluzEE JWT Authentication support by adding the following depe
 </dependency>
 ```
 
-The provided filters should be added automatically upon running. If that doesn't happen or if you wish to manually 
-include the provided filters, register the following classes:
+The provided filters should be added to the JAX-RS Application:
 
-- JWTAuthorizationFilter
-- JWTRolesAllowedDynamicFeature  
+```java
+@ApplicationPath("v1")
+public class CustomerApplication extends Application {
+
+    @Override
+    public Set<Class<?>> getClasses() {
+
+        Set<Class<?>> classes = new HashSet<>();
+
+        // microprofile jwt auth filters
+        classes.add(JWTAuthorizationFilter.class);
+        classes.add(JWTRolesAllowedDynamicFeature.class);
+
+        // resources
+        classes.add(CustomerResource.class);
+
+        return classes;
+    }
+
+}
+```
 
 ## Configuration
 
