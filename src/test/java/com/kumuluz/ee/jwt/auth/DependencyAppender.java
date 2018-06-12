@@ -24,7 +24,7 @@ public class DependencyAppender implements MavenDependencyAppender {
 
         List<String> libs = new ArrayList<>();
 
-        libs.add("com.kumuluz.ee:kumuluzee-jax-rs-jersey:");
+        libs.add("com.kumuluz.ee:kumuluzee-jax-rs-jersey:3.0.0-SNAPSHOT");
         libs.add("com.kumuluz.ee:kumuluzee-json-p-jsonp:");
         libs.add("com.kumuluz.ee:kumuluzee-cdi-weld:");
         libs.add("org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:" +
