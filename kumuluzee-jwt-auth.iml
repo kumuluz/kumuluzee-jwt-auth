@@ -7,64 +7,143 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/test/resources" type="java-test-resource" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:1.0" level="project" />
     <orderEntry type="library" name="Maven: org.osgi:org.osgi.annotation.versioning:1.0.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.kumuluz.ee:kumuluzee-common:2.4.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.annotation:javax.annotation-api:1.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.kumuluz.ee:kumuluzee-common:2.6.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.annotation:javax.annotation-api:1.3.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.servlet:javax.servlet-api:3.1.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.zaxxer:HikariCP:2.6.3" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.zaxxer:HikariCP:2.7.8" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.slf4j:slf4j-api:1.7.25" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.yaml:snakeyaml:1.18" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.kumuluz.ee:kumuluzee-jax-rs-jersey:2.4.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.ws.rs:javax.ws.rs-api:2.0.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.containers:jersey-container-servlet:2.25.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.containers:jersey-container-servlet-core:2.25.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.hk2.external:javax.inject:2.5.0-b32" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.core:jersey-common:2.25.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.bundles.repackaged:jersey-guava:2.25.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.hk2:hk2-api:2.5.0-b32" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.hk2:hk2-utils:2.5.0-b32" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.hk2.external:aopalliance-repackaged:2.5.0-b32" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.hk2:hk2-locator:2.5.0-b32" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.javassist:javassist:3.20.0-GA" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.kumuluz.ee:kumuluzee-jax-rs-jersey:2.6.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.containers:jersey-container-servlet:2.26" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.containers:jersey-container-servlet-core:2.26" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.core:jersey-common:2.26" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.hk2:osgi-resource-locator:1.0.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.core:jersey-server:2.25.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.core:jersey-client:2.25.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.media:jersey-media-jaxb:2.25.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.validation:validation-api:1.1.0.Final" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.media:jersey-media-json-jackson:2.25.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.ext:jersey-entity-filtering:2.25.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.8.10" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.8.10" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.8.10" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.8.10" level="project" />
-    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.8.10" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.kumuluz.ee:kumuluzee-cdi-weld:2.4.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.enterprise:cdi-api:1.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.core:jersey-server:2.26" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.core:jersey-client:2.26" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.media:jersey-media-jaxb:2.26" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.validation:validation-api:2.0.1.Final" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.ws.rs:javax.ws.rs-api:2.1" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.media:jersey-media-sse:2.26" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.media:jersey-media-json-jackson:2.26" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.ext:jersey-entity-filtering:2.26" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.inject:jersey-hk2:2.26" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.hk2:hk2-locator:2.5.0-b42" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.hk2.external:aopalliance-repackaged:2.5.0-b42" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.hk2:hk2-api:2.5.0-b42" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.hk2:hk2-utils:2.5.0-b42" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.javassist:javassist:3.22.0-GA" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider:2.8.11" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.jaxrs:jackson-jaxrs-base:2.8.11" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-core:2.8.11" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.fasterxml.jackson.module:jackson-module-jaxb-annotations:2.8.11" level="project" />
+    <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-annotations:2.8.11" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.kumuluz.ee:kumuluzee-cdi-weld:2.6.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.interceptor:javax.interceptor-api:1.2.1" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: javax.el:javax.el-api:3.0.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.interceptor:javax.interceptor-api:1.2" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.inject:javax.inject:1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.weld.servlet:weld-servlet-core:2.4.4.Final" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.weld.environment:weld-environment-common:2.4.4.Final" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.weld:weld-core-impl:2.4.4.Final" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.classfilewriter:jboss-classfilewriter:1.1.2.Final" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.weld:weld-spi:2.4.SP1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.weld:weld-api:2.4.SP1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.weld.probe:weld-probe-core:2.4.4.Final" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.weld:weld-core-jsf:2.4.4.Final" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss:jandex:2.0.3.Final" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.logging:jboss-logging:3.3.0.Final" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.ext.cdi:jersey-cdi1x:2.25.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: com.kumuluz.ee:kumuluzee-json-p-jsonp:2.4.1" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.json:javax.json-api:1.0" level="project" />
-    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish:javax.json:1.0.4" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.weld.servlet:weld-servlet-core:3.0.2.Final" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.weld.environment:weld-environment-common:3.0.2.Final" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.weld:weld-core-impl:3.0.2.Final" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.weld:weld-spi:3.0.SP2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.weld:weld-api:3.0.SP2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.weld.probe:weld-probe-core:3.0.2.Final" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.weld.module:weld-jsf:3.0.2.Final" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.weld.module:weld-web:3.0.2.Final" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.classfilewriter:jboss-classfilewriter:1.2.1.Final" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss:jandex:2.0.4.Final" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.jboss.logging:jboss-logging:3.3.1.Final" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.ext.cdi:jersey-cdi1x:2.26" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.ext.cdi:jersey-cdi1x-ban-custom-hk2-binding:2.26" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: com.kumuluz.ee:kumuluzee-json-p-jsonp:2.6.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish:javax.json:1.1.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.json:javax.json-api:1.1.2" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish.jersey.media:jersey-media-json-processing:2.26" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: org.glassfish:jsonp-jaxrs:1.1.1" level="project" />
     <orderEntry type="library" name="Maven: com.auth0:java-jwt:3.2.0" level="project" />
     <orderEntry type="library" name="Maven: com.fasterxml.jackson.core:jackson-databind:2.8.4" level="project" />
     <orderEntry type="library" name="Maven: commons-codec:commons-codec:1.10" level="project" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15on:1.55" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.microprofile.jwt:microprofile-jwt-auth-tck:1.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.nimbusds:nimbus-jose-jwt:4.23" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.github.stephenc.jcip:jcip-annotations:1.0-1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: net.minidev:json-smart:1.3.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: commons-io:commons-io:2.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap:shrinkwrap-api:1.2.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.testng:arquillian-testng-container:1.1.13.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.testng:arquillian-testng-core:1.1.13.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.test:arquillian-test-api:1.1.13.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.core:arquillian-core-impl-base:1.1.13.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.test:arquillian-test-impl-base:1.1.13.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.container:arquillian-container-impl-base:1.1.13.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.container:arquillian-container-test-impl-base:1.1.13.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api:2.2.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-spi:2.2.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven:2.2.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-spi-maven:2.2.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-api-maven-archive:2.2.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-impl-maven:2.2.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.aether:aether-api:1.0.0.v20140518" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.aether:aether-impl:1.0.0.v20140518" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.aether:aether-spi:1.0.0.v20140518" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.aether:aether-util:1.0.0.v20140518" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.aether:aether-connector-basic:1.0.0.v20140518" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.aether:aether-transport-wagon:1.0.0.v20140518" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-aether-provider:3.2.5" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-model:3.2.5" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-model-builder:3.2.5" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.plexus:plexus-component-annotations:1.5.5" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-repository-metadata:3.2.5" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-settings:3.2.5" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven:maven-settings-builder:3.2.5" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.google.guava:guava:18.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.plexus:plexus-interpolation:1.21" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.plexus:plexus-utils:3.0.20" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.sonatype.plexus:plexus-sec-dispatcher:1.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.sonatype.plexus:plexus-cipher:1.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.wagon:wagon-provider-api:2.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.wagon:wagon-file:2.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: commons-lang:commons-lang:2.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.wagon:wagon-http-lightweight:2.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.maven.wagon:wagon-http-shared:2.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jsoup:jsoup:1.7.2" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-impl-maven-archive:2.2.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.resolver:shrinkwrap-resolver-spi-maven-archive:2.2.4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.sisu:org.eclipse.sisu.plexus:0.3.0.M1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.sisu:org.eclipse.sisu.inject:0.3.0.M1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.plexus:plexus-compiler-javac:2.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.codehaus.plexus:plexus-compiler-api:2.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.eclipse.microprofile.jwt:microprofile-jwt-auth-tck:test-jar:tests:1.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.container:arquillian-container-spi:1.1.13.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.core:arquillian-core-spi:1.1.13.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.core:arquillian-core-api:1.1.13.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.config:arquillian-config-api:1.1.13.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.config:arquillian-config-impl-base:1.1.13.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-spi:2.0.0-alpha-10" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap.descriptors:shrinkwrap-descriptors-api-base:2.0.0-alpha-10" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.container:arquillian-container-test-spi:1.1.13.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.test:arquillian-test-spi:1.1.13.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.container:arquillian-container-test-api:1.1.13.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.kumuluz.ee.testing:kumuluzee-arquillian-container:1.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.protocol:arquillian-protocol-servlet:1.1.13.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.testenricher:arquillian-testenricher-cdi:1.1.13.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.testenricher:arquillian-testenricher-resource:1.1.13.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.arquillian.testenricher:arquillian-testenricher-initialcontext:1.1.13.Final" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap:shrinkwrap-impl-base:1.2.6" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.jboss.shrinkwrap:shrinkwrap-spi:1.2.6" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.enterprise:cdi-api:2.0" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Maven: javax.inject:javax.inject:1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.testng:testng:6.9.9" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.12" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.hamcrest:hamcrest-core:1.3" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: com.beust:jcommander:1.48" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.ant:ant:1.7.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.apache.ant:ant-launcher:1.7.0" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: org.beanshell:bsh:2.0b4" level="project" />
   </component>
 </module>
