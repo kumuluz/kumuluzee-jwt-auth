@@ -34,7 +34,8 @@ import java.util.ResourceBundle;
  */
 public class DependencyAppender implements MavenDependencyAppender {
 
-    private static final ResourceBundle versionsBundle = ResourceBundle.getBundle("META-INF/kumuluzee/versions");
+    private static final ResourceBundle versionsBundle =
+            ResourceBundle.getBundle("META-INF/kumuluzee/jwt-auth/versions");
 
     private static final String JERSEY_MEDIA_JSON_PROCESSING_VERSION = "2.19";
     private static final String NIMBUS_JOSE_JWT_VERSION = "4.23";
