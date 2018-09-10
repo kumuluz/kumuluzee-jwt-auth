@@ -22,11 +22,12 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <kumuluzee.version>2.6.0-SNAPSHOT</kumuluzee.version>
+        <kumuluzee.version>2.5.3</kumuluzee.version>
         <microprofile-jwt-auth.version>1.0</microprofile-jwt-auth.version>
         <java-jwt.version>3.2.0</java-jwt.version>
+        <jwks-rsa.version>0.6.0</jwks-rsa.version>
 
-        <kumuluzee-arquillian-container.version>1.0.0-SNAPSHOT</kumuluzee-arquillian-container.version>
+        <kumuluzee-arquillian-container.version>1.0.0</kumuluzee-arquillian-container.version>
         <testng.version>6.9.9</testng.version>
         <arquillian.version>1.1.13.Final</arquillian.version>
 
@@ -122,6 +123,11 @@
             <artifactId>java-jwt</artifactId>
             <version>${java-jwt.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>jwks-rsa</artifactId>
+            <version>${jwks-rsa.version}</version>
+        </dependency>
 
 
         <dependency>
@@ -176,6 +182,7 @@
                 <configuration>
                     <suiteXmlFiles>
                         <suiteXmlFile>tck-base-suite.xml</suiteXmlFile>
+                        <suiteXmlFile>aux-test-suite.xml</suiteXmlFile>
                     </suiteXmlFiles>
                 </configuration>
             </plugin>

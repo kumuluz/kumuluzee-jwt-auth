@@ -20,14 +20,17 @@
  */
 package com.kumuluz.ee.jwt.auth.cdi;
 
+import com.auth0.jwt.interfaces.RSAKeyProvider;
 import com.kumuluz.ee.configuration.cdi.ConfigBundle;
 import com.kumuluz.ee.configuration.cdi.ConfigValue;
-import org.bouncycastle.util.encoders.Base64;
-
-import javax.enterprise.context.ApplicationScoped;
+import com.kumuluz.ee.jwt.auth.helper.JwksRSAKeyProvider;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.KeyFactory;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
+import javax.enterprise.context.ApplicationScoped;
 
 /**
  * MP-JWT configuration settings
@@ -42,6 +45,10 @@ public class JWTContextInfo {
     @ConfigValue("public-key")
     private String publicKey;
     private RSAPublicKey publicKeyDecoded;
+
+    @ConfigValue("jwks-uri")
+    private String jwksUri;
+    private JwksRSAKeyProvider jwkProvider;
 
     @ConfigValue("issuer")
     private String issuer;
@@ -59,8 +66,12 @@ public class JWTContextInfo {
             return publicKeyDecoded;
         }
 
+        if (publicKey == null) { // when using JWKS we don't need a hard-coded public key.
+            return null;
+        }
+
         try {
-            byte[] publicKeyBytes = Base64.decode(publicKey);
+            byte[] publicKeyBytes = Base64.getDecoder().decode(publicKey);
             X509EncodedKeySpec publicKeyX509 = new X509EncodedKeySpec(publicKeyBytes);
             KeyFactory kf = KeyFactory.getInstance("RSA");
             publicKeyDecoded = (RSAPublicKey) kf.generatePublic(publicKeyX509);
@@ -69,6 +80,32 @@ public class JWTContextInfo {
         }
 
         return publicKeyDecoded;
+    }
+
+    public String getJwksUri() {
+        return jwksUri;
+    }
+
+    public void setJwksUri(String jwksUri) {
+        this.jwksUri = jwksUri;
+    }
+
+    public RSAKeyProvider getJwkProvider() {
+        if (jwkProvider != null) {
+            return jwkProvider;
+        }
+
+        if (jwksUri == null) { // when supplying a public key there is no need for a JWKS URI.
+            return null;
+        }
+
+        try {
+            jwkProvider = JwksRSAKeyProvider.newJwksRSAKeyProvider(new URL(jwksUri));
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException("The provided kumuluzee.jwt-auth.jwks-uri is not a valid URL.", e);
+        }
+
+        return jwkProvider;
     }
 
     public String getIssuer() {

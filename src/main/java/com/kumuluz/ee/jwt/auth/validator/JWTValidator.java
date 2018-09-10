@@ -26,9 +26,11 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.RSAKeyProvider;
 import com.kumuluz.ee.jwt.auth.cdi.JWTContextInfo;
 import com.kumuluz.ee.jwt.auth.helper.ClaimHelper;
 import com.kumuluz.ee.jwt.auth.principal.JWTPrincipal;
+import java.security.interfaces.RSAPublicKey;
 import org.eclipse.microprofile.jwt.Claims;
 
 import java.util.Map;
@@ -42,7 +44,19 @@ import java.util.Map;
 public class JWTValidator {
 
     public static JWTPrincipal validateToken(String token, JWTContextInfo jwtContextInfo) throws JWTValidationException {
-        Algorithm algorithm = Algorithm.RSA256(jwtContextInfo.getDecodedPublicKey(), null);
+        Algorithm algorithm;
+        RSAKeyProvider jwkProvider = jwtContextInfo.getJwkProvider();
+        if (jwkProvider != null) {
+            algorithm = Algorithm.RSA256(jwkProvider);
+        } else {
+            final RSAPublicKey decodedPublicKey = jwtContextInfo.getDecodedPublicKey();
+            if (decodedPublicKey != null) {
+                algorithm = Algorithm.RSA256(decodedPublicKey, null);
+            } else {
+                throw new IllegalStateException("Neither kumuluzee.jwt-auth.jwks-uri nor kumuluzee.jwt-auth.public-key were configured.");
+            }
+        }
+
         JWTVerifier verifier = JWT.require(algorithm).withIssuer(jwtContextInfo.getIssuer()).build();
 
         DecodedJWT jwt;

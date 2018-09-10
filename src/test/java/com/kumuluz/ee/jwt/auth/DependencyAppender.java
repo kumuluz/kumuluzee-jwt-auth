@@ -52,6 +52,8 @@ public class DependencyAppender implements MavenDependencyAppender {
                 versionsBundle.getString("microprofile-jwt-auth-version"));
         libs.add("com.auth0:java-jwt:" +
                 versionsBundle.getString("java-jwt-version"));
+        libs.add("com.auth0:jwks-rsa:" +
+                versionsBundle.getString("jwks-rsa-version"));
 
         libs.add("com.nimbusds:nimbus-jose-jwt:" + NIMBUS_JOSE_JWT_VERSION);
         libs.add("org.glassfish.jersey.media:jersey-media-json-processing:" + JERSEY_MEDIA_JSON_PROCESSING_VERSION);
