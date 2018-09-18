@@ -22,7 +22,7 @@ package com.kumuluz.ee.jwt.auth;
 
 import com.kumuluz.ee.jwt.auth.cdi.JWTContextInfo;
 import com.kumuluz.ee.jwt.auth.validator.JWTValidator;
-import org.bouncycastle.util.encoders.Base64;
+import java.util.Base64;
 import org.eclipse.microprofile.jwt.JsonWebToken;
 import org.eclipse.microprofile.jwt.tck.util.ITokenParser;
 
@@ -40,7 +40,7 @@ public class TCKTokenParser implements ITokenParser {
     public JsonWebToken parse(String bearerToken, String issuer, PublicKey publicKey) throws Exception {
         JWTContextInfo contextInfo = new JWTContextInfo();
         contextInfo.setIssuer(issuer);
-        contextInfo.setPublicKey(Base64.toBase64String(publicKey.getEncoded()));
+        contextInfo.setPublicKey(Base64.getEncoder().encodeToString(publicKey.getEncoded()));
         return JWTValidator.validateToken(bearerToken, contextInfo);
     }
 }

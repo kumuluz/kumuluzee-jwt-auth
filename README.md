@@ -43,7 +43,7 @@ public class CustomerApplication extends Application {
 
 ## Configuration
 
-In order for the extension to work correctly you must provide two configuration properties:
+Given you work with a static public key for verification you must provide two configuration properties:
 
 ```yaml
 kumuluzee:
@@ -52,8 +52,19 @@ kumuluzee:
     issuer: http://example.org/auth
 ``` 
 
-The `public key` and `issuer` configuration properties are used to validate and decode the received `Authorization` 
+If, on the other hand, you use JWKS as a source for your verification keys then you instead provide following two configuration properties:
+
+```yaml
+kumuluzee:
+  jwt-auth:
+    jwks-uri: https://example.com/jwks.json
+    issuer: http://example.org/auth
+``` 
+
+The `public-key`/`jwks-uri` and `issuer` configuration properties are used to validate and decode the received `Authorization` 
 token.
+
+If both `public-key` and `jwks-uri` are set, the `jwks-uri` takes precedence and the `public-key` is ignored.
 
 ##  Accessing token information
 
