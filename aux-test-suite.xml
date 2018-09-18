@@ -2,9 +2,9 @@
 <suite name="aux-test-suite" verbose="1" configfailurepolicy="continue">
 
     <test name="aux-tests" verbose="10">
-        <classes>
-            <class name="com.kumuluz.ee.jwt.auth.validator.JWTValidatorTest"/>
-        </classes>
+        <packages>
+            <package name="com.kumuluz.ee.jwt.auth.tests.*"/>
+        </packages>
     </test>
 
 </suite>

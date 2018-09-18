@@ -41,6 +41,7 @@ public class TCKTokenParser implements ITokenParser {
         JWTContextInfo contextInfo = new JWTContextInfo();
         contextInfo.setIssuer(issuer);
         contextInfo.setPublicKey(Base64.getEncoder().encodeToString(publicKey.getEncoded()));
+        contextInfo.init();
         return JWTValidator.validateToken(bearerToken, contextInfo);
     }
 }

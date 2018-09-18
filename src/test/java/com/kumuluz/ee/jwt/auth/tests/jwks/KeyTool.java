@@ -1,4 +1,24 @@
-package com.kumuluz.ee.jwt.auth.validator;
+/*
+ *  Copyright (c) 2014-2017 Kumuluz and/or its affiliates
+ *  and other contributors as indicated by the @author tags and
+ *  the contributor list.
+ *
+ *  Licensed under the MIT License (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  https://opensource.org/licenses/MIT
+ *
+ *  The software is provided "AS IS", WITHOUT WARRANTY OF ANY KIND, express or
+ *  implied, including but not limited to the warranties of merchantability,
+ *  fitness for a particular purpose and noninfringement. in no event shall the
+ *  authors or copyright holders be liable for any claim, damages or other
+ *  liability, whether in an action of contract, tort or otherwise, arising from,
+ *  out of or in connection with the software or the use or other dealings in the
+ *  software. See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+package com.kumuluz.ee.jwt.auth.tests.jwks;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,6 +47,7 @@ import javax.json.JsonObject;
  * <p>
  *
  * @author Daniel Pfeifer
+ * @since 1.1.0
  */
 final class KeyTool {
     private RSAPublicKey publicKey;
@@ -37,14 +58,10 @@ final class KeyTool {
      * Returns a new {@link KeyTool} fully prepared with a RSA Key Pair.
      *
      * @param pkcs8Key PKCS8-formatted private key
-     * @return a {@link KeyTool}.
      * @throws IllegalArgumentException thrown if RSA and/or a key-length of 2048 bit is not supported by the JVM.
      */
-    static KeyTool newKeyTool(final URI pkcs8Key) {
-        final KeyTool keyTool = new KeyTool();
-        keyTool.prepare(pkcs8Key);
-
-        return keyTool;
+    public KeyTool(final URI pkcs8Key) {
+        prepare(pkcs8Key);
     }
 
     /**
@@ -125,9 +142,5 @@ final class KeyTool {
         } catch (final InvalidKeySpecException e) {
             throw new IllegalArgumentException("Not a valid RSA private key.", e);
         }
-    }
-
-    private KeyTool() {
-        // intentionally left empty
     }
 }

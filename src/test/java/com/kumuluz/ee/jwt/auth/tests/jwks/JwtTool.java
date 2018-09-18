@@ -1,4 +1,24 @@
-package com.kumuluz.ee.jwt.auth.validator;
+/*
+ *  Copyright (c) 2014-2017 Kumuluz and/or its affiliates
+ *  and other contributors as indicated by the @author tags and
+ *  the contributor list.
+ *
+ *  Licensed under the MIT License (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
+ *
+ *  https://opensource.org/licenses/MIT
+ *
+ *  The software is provided "AS IS", WITHOUT WARRANTY OF ANY KIND, express or
+ *  implied, including but not limited to the warranties of merchantability,
+ *  fitness for a particular purpose and noninfringement. in no event shall the
+ *  authors or copyright holders be liable for any claim, damages or other
+ *  liability, whether in an action of contract, tort or otherwise, arising from,
+ *  out of or in connection with the software or the use or other dealings in the
+ *  software. See the License for the specific language governing permissions and
+ *  limitations under the License.
+ */
+package com.kumuluz.ee.jwt.auth.tests.jwks;
 
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
@@ -10,6 +30,12 @@ import java.util.UUID;
 import javax.json.Json;
 import javax.json.JsonObject;
 
+/**
+ * Tool for signing jwt.
+ *
+ * @author Daniel Pfeifer
+ * @since 1.1.0
+ */
 final class JwtTool {
     private final KeyTool keyTool;
     private final String issuer;
@@ -30,7 +56,7 @@ final class JwtTool {
      * @param subject string to use for "sub" and "preferred_username".
      * @return a base64-encoded signed JWT token.
      */
-    String generateSignedJwt(final String subject) {
+    private String generateSignedJwt(final String subject) {
         final Instant now = Instant.now();
         final Instant later = now.plus(1, ChronoUnit.HOURS);
         final JsonObject joseHeader = Json.createObjectBuilder()

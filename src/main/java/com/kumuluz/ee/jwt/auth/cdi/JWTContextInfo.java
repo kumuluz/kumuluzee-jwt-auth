@@ -30,6 +30,7 @@ import java.security.KeyFactory;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 
 /**
@@ -53,6 +54,28 @@ public class JWTContextInfo {
     @ConfigValue("issuer")
     private String issuer;
 
+    @PostConstruct
+    public void init() {
+        if (publicKey != null) {
+            try {
+                byte[] publicKeyBytes = Base64.getDecoder().decode(publicKey);
+                X509EncodedKeySpec publicKeyX509 = new X509EncodedKeySpec(publicKeyBytes);
+                KeyFactory kf = KeyFactory.getInstance("RSA");
+                publicKeyDecoded = (RSAPublicKey) kf.generatePublic(publicKeyX509);
+            } catch (Exception e) {
+                // ignore
+            }
+        }
+
+        if (jwksUri != null) {
+            try {
+                jwkProvider = new JwksRSAKeyProvider(new URL(jwksUri));
+            } catch (MalformedURLException e) {
+                throw new IllegalArgumentException("The provided kumuluzee.jwt-auth.jwks-uri is not a valid URL.", e);
+            }
+        }
+    }
+
     public String getPublicKey() {
         return publicKey;
     }
@@ -62,23 +85,6 @@ public class JWTContextInfo {
     }
 
     public RSAPublicKey getDecodedPublicKey() {
-        if (publicKeyDecoded != null) {
-            return publicKeyDecoded;
-        }
-
-        if (publicKey == null) { // when using JWKS we don't need a hard-coded public key.
-            return null;
-        }
-
-        try {
-            byte[] publicKeyBytes = Base64.getDecoder().decode(publicKey);
-            X509EncodedKeySpec publicKeyX509 = new X509EncodedKeySpec(publicKeyBytes);
-            KeyFactory kf = KeyFactory.getInstance("RSA");
-            publicKeyDecoded = (RSAPublicKey) kf.generatePublic(publicKeyX509);
-        } catch (Exception e) {
-            // ignore
-        }
-
         return publicKeyDecoded;
     }
 
@@ -91,20 +97,6 @@ public class JWTContextInfo {
     }
 
     public RSAKeyProvider getJwkProvider() {
-        if (jwkProvider != null) {
-            return jwkProvider;
-        }
-
-        if (jwksUri == null) { // when supplying a public key there is no need for a JWKS URI.
-            return null;
-        }
-
-        try {
-            jwkProvider = JwksRSAKeyProvider.newJwksRSAKeyProvider(new URL(jwksUri));
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("The provided kumuluzee.jwt-auth.jwks-uri is not a valid URL.", e);
-        }
-
         return jwkProvider;
     }
 
