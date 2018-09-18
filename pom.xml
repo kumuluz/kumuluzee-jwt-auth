@@ -182,7 +182,6 @@
                 <configuration>
                     <suiteXmlFiles>
                         <suiteXmlFile>tck-base-suite.xml</suiteXmlFile>
-                        <suiteXmlFile>aux-test-suite.xml</suiteXmlFile>
                     </suiteXmlFiles>
                 </configuration>
             </plugin>

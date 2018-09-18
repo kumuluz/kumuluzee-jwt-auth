@@ -56,7 +56,7 @@ final class JwtTool {
      * @param subject string to use for "sub" and "preferred_username".
      * @return a base64-encoded signed JWT token.
      */
-    private String generateSignedJwt(final String subject) {
+    public String generateSignedJwt(final String subject) {
         final Instant now = Instant.now();
         final Instant later = now.plus(1, ChronoUnit.HOURS);
         final JsonObject joseHeader = Json.createObjectBuilder()
@@ -68,7 +68,7 @@ final class JwtTool {
                 .add("jti", UUID.randomUUID().toString())
                 .add("sub", subject)
                 .add("preferred_username", subject)
-                .add("groups", Json.createArrayBuilder())
+                .add("groups", Json.createArrayBuilder().add("tester"))
                 .add("aud", "kumuluzee-jwt-test")
                 .add("iss", issuer)
                 .add("iat", now.getEpochSecond())

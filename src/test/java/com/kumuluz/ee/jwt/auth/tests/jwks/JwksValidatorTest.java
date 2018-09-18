@@ -23,8 +23,6 @@ package com.kumuluz.ee.jwt.auth.tests.jwks;
 import com.kumuluz.ee.jwt.auth.cdi.JWTContextInfo;
 import com.kumuluz.ee.jwt.auth.validator.JWTValidationException;
 import com.kumuluz.ee.jwt.auth.validator.JWTValidator;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
@@ -37,12 +35,12 @@ public class JwksValidatorTest {
     private JwksServer jwksServer;
     private JWTContextInfo jwtContextInfo;
 
-    @AfterClass
+    @Test(priority = Integer.MAX_VALUE, groups = "jwks")
     public void after() {
         jwksServer.stop();
     }
 
-    @BeforeClass
+    @Test(priority = -1, groups = "jwks")
     public void before() {
         try {
             jwksServer = new JwksServer(new KeyTool(getClass().getResource("/good_key.pem").toURI()), 8081);
@@ -57,14 +55,14 @@ public class JwksValidatorTest {
         jwtContextInfo.init();
     }
 
-    @Test
+    @Test(groups = "jwks")
     public void testThatTokenIsSignedByKeyInJwks() throws Exception {
         final KeyTool keyTool = new KeyTool(getClass().getResource("/good_key.pem").toURI());
         final String jwt = new JwtTool(keyTool, "http://example.com").generateSignedJwt();
         JWTValidator.validateToken(jwt, jwtContextInfo);
     }
 
-    @Test(expectedExceptions = JWTValidationException.class)
+    @Test(expectedExceptions = JWTValidationException.class, groups = "jwks")
     public void testThatTokenIsNotSignedByKeyInJwks() throws Exception {
         final KeyTool keyTool = new KeyTool(getClass().getResource("/bad_key.pem").toURI());
         final String jwt = new JwtTool(keyTool, "http://example.com").generateSignedJwt();

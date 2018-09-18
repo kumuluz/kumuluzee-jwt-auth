@@ -67,7 +67,7 @@ final class JwksServer {
 
     synchronized void stop() {
         if (httpServer != null) {
-            httpServer.stop(10);
+            httpServer.stop(1);
         }
     }
 }
