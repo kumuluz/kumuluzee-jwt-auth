@@ -20,8 +20,6 @@
  */
 package com.kumuluz.ee.jwt.auth;
 
-import com.kumuluz.ee.jwt.auth.feature.JWTRolesAllowedDynamicFeature;
-import com.kumuluz.ee.jwt.auth.filter.JWTAuthorizationFilter;
 import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.tck.util.TokenUtils;
 import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
@@ -42,8 +40,6 @@ public class ArchiveProcessor implements ApplicationArchiveProcessor {
 
         WebArchive war = archive.as(WebArchive.class);
 
-        war.addClass(JWTAuthorizationFilter.class);
-        war.addClass(JWTRolesAllowedDynamicFeature.class);
         war.addClass(TokenUtils.class);
         war.addClass(Claims.class);
         war.addAsResource("Token1.json");

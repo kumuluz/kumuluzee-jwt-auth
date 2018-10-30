@@ -37,7 +37,6 @@ public class DependencyAppender implements MavenDependencyAppender {
     private static final ResourceBundle versionsBundle =
             ResourceBundle.getBundle("META-INF/kumuluzee/jwt-auth/versions");
 
-    private static final String JERSEY_MEDIA_JSON_PROCESSING_VERSION = "2.19";
     private static final String NIMBUS_JOSE_JWT_VERSION = "4.23";
 
     @Override
@@ -57,7 +56,6 @@ public class DependencyAppender implements MavenDependencyAppender {
         libs.add("com.fasterxml.jackson.core:jackson-databind:" + versionsBundle.getString("jackson-version"));
 
         libs.add("com.nimbusds:nimbus-jose-jwt:" + NIMBUS_JOSE_JWT_VERSION);
-        libs.add("org.glassfish.jersey.media:jersey-media-json-processing:" + JERSEY_MEDIA_JSON_PROCESSING_VERSION);
 
         return libs;
     }

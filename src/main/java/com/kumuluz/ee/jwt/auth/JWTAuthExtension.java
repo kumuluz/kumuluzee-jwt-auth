@@ -25,6 +25,8 @@ import com.kumuluz.ee.common.config.EeConfig;
 import com.kumuluz.ee.common.dependencies.*;
 import com.kumuluz.ee.common.wrapper.KumuluzServerWrapper;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -51,5 +53,10 @@ public class JWTAuthExtension implements Extension {
     @Override
     public void load() {
         log.info("Initialised JWT auth extension.");
+    }
+
+    @Override
+    public List<String> scanLibraries() {
+        return Collections.singletonList("kumuluzee-jwt-auth");
     }
 }
