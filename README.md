@@ -3,7 +3,7 @@
 
 > KumuluzEE JWT Authentication extension provides Microprofile compliant role based access control microservice endpoints using OpenID Connect and JSON Web Tokens.
 
-KumuluzEE JWT Authentication implements the [MicroProfile JWT Authentication 1.0 API](https://microprofile.io/project/eclipse/microprofile-jwt-auth).
+KumuluzEE JWT Authentication implements the [MicroProfile JWT Authentication 1.1 API](https://microprofile.io/project/eclipse/microprofile-jwt-auth).
 
 ## Usage
 
@@ -17,27 +17,12 @@ You can enable KumuluzEE JWT Authentication support by adding the following depe
 </dependency>
 ```
 
-The provided filters should be added to the JAX-RS Application:
+The `LoginConfig` annotation should be added to the JAX-RS Application:
 
 ```java
+@LoginConfig(authMethod = "MP-JWT")
 @ApplicationPath("v1")
 public class CustomerApplication extends Application {
-
-    @Override
-    public Set<Class<?>> getClasses() {
-
-        Set<Class<?>> classes = new HashSet<>();
-
-        // microprofile jwt auth filters
-        classes.add(JWTAuthorizationFilter.class);
-        classes.add(JWTRolesAllowedDynamicFeature.class);
-
-        // resources
-        classes.add(CustomerResource.class);
-
-        return classes;
-    }
-
 }
 ```
 
@@ -52,7 +37,8 @@ kumuluzee:
     issuer: http://example.org/auth
 ``` 
 
-If, on the other hand, you use JWKS as a source for your verification keys then you instead provide following two configuration properties:
+If, on the other hand, you use JWKS as a source for your verification keys then you instead provide following two
+configuration properties:
 
 ```yaml
 kumuluzee:
@@ -61,10 +47,12 @@ kumuluzee:
     issuer: http://example.org/auth
 ``` 
 
-The `public-key`/`jwks-uri` and `issuer` configuration properties are used to validate and decode the received `Authorization` 
-token.
+The `public-key`/`jwks-uri` and `issuer` configuration properties are used to validate and decode the received
+`Authorization` token.
 
 If both `public-key` and `jwks-uri` are set, the `jwks-uri` takes precedence and the `public-key` is ignored.
+
+JWT authentication can be disabled by setting the `kumuluzee.jwt-auth.enabled` configuration property to `false`.
 
 ##  Accessing token information
 
