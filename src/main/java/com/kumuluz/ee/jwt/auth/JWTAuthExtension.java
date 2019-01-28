@@ -24,6 +24,8 @@ import com.kumuluz.ee.common.Extension;
 import com.kumuluz.ee.common.config.EeConfig;
 import com.kumuluz.ee.common.dependencies.*;
 import com.kumuluz.ee.common.wrapper.KumuluzServerWrapper;
+import com.kumuluz.ee.configuration.utils.ConfigurationUtil;
+import com.kumuluz.ee.jwt.auth.feature.FeatureDisabledSingleton;
 
 import java.util.Collections;
 import java.util.List;
@@ -48,6 +50,7 @@ public class JWTAuthExtension implements Extension {
     @Override
     public void init(KumuluzServerWrapper kumuluzServerWrapper, EeConfig eeConfig) {
         log.info("Initialising JWT auth extension.");
+        FeatureDisabledSingleton.init(true);
     }
 
     @Override
@@ -58,5 +61,10 @@ public class JWTAuthExtension implements Extension {
     @Override
     public List<String> scanLibraries() {
         return Collections.singletonList("kumuluzee-jwt-auth");
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return ConfigurationUtil.getInstance().getBoolean("kumuluzee.jwt-auth.enabled").orElse(true);
     }
 }

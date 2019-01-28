@@ -22,6 +22,7 @@ package com.kumuluz.ee.jwt.auth.filter;
 
 import com.kumuluz.ee.jwt.auth.cdi.JWTContextInfo;
 import com.kumuluz.ee.jwt.auth.context.JWTSecurityContext;
+import com.kumuluz.ee.jwt.auth.feature.FeatureDisabledSingleton;
 import com.kumuluz.ee.jwt.auth.principal.JWTPrincipal;
 import com.kumuluz.ee.jwt.auth.validator.JWTValidationException;
 import com.kumuluz.ee.jwt.auth.validator.JWTValidator;
@@ -61,6 +62,11 @@ public class JWTAuthorizationFilter implements ContainerRequestFilter {
 
     @Override
     public void filter(ContainerRequestContext requestContext) {
+
+        if (!FeatureDisabledSingleton.getInstance().isEnabled()) {
+            return;
+        }
+
         String authorization = null;
 
         if (requestContext.getHeaders().containsKey(AUTHORIZATION_HEADER)) {

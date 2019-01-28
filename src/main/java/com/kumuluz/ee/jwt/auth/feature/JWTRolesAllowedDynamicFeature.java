@@ -47,6 +47,11 @@ import java.lang.reflect.Method;
 public class JWTRolesAllowedDynamicFeature implements DynamicFeature {
 
     public void configure(ResourceInfo resourceInfo, FeatureContext configuration) {
+
+        if (!FeatureDisabledSingleton.getInstance().isEnabled()) {
+            return;
+        }
+
         Method resourceMethod = resourceInfo.getResourceMethod();
         if (resourceMethod.isAnnotationPresent(DenyAll.class)) {
             configuration.register(new JWTRolesAllowedDynamicFeature.RolesAllowedRequestFilter());
