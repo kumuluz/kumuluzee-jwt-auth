@@ -46,10 +46,9 @@ public class JWTSecurityContext implements SecurityContext {
         return principal;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public boolean isUserInRole(String role) {
-        return principal != null && principal.getGroups().contains(role);
+        return principal != null && principal.getGroups() != null && principal.getGroups().contains(role);
     }
 
     @Override
