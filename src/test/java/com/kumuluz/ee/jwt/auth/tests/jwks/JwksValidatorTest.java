@@ -52,7 +52,7 @@ public class JwksValidatorTest {
         jwtContextInfo = new JWTContextInfo();
         jwtContextInfo.setJwksUri("http://localhost:8081/jwks");
         jwtContextInfo.setIssuer("http://example.com");
-        jwtContextInfo.init();
+        jwtContextInfo.initJwks();
     }
 
     @Test(groups = "jwks")

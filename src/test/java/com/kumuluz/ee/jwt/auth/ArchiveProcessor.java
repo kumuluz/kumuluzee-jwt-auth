@@ -44,7 +44,7 @@ public class ArchiveProcessor implements ApplicationArchiveProcessor {
         war.addClass(Claims.class);
         war.addAsResource("Token1.json");
         war.addAsResource("privateKey.pem");
-        if (!war.contains("WEB-INF/classes/config.yml")) {
+        if (!war.contains("WEB-INF/classes/config.yml") && !war.contains("META-INF/microprofile-config.properties")) {
             war.addAsResource("assets/config.yml", "config.yml");
         }
     }

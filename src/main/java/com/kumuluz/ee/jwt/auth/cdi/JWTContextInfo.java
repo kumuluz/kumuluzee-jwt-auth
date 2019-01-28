@@ -21,17 +21,29 @@
 package com.kumuluz.ee.jwt.auth.cdi;
 
 import com.auth0.jwt.interfaces.RSAKeyProvider;
-import com.kumuluz.ee.configuration.cdi.ConfigBundle;
-import com.kumuluz.ee.configuration.cdi.ConfigValue;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.kumuluz.ee.configuration.utils.ConfigurationUtil;
 import com.kumuluz.ee.jwt.auth.helper.JwksRSAKeyProvider;
+
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.ApplicationScoped;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyFactory;
 import java.security.interfaces.RSAPublicKey;
+import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.ApplicationScoped;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * MP-JWT configuration settings
@@ -40,23 +52,59 @@ import javax.enterprise.context.ApplicationScoped;
  * @since 1.0.0
  */
 @ApplicationScoped
-@ConfigBundle("kumuluzee.jwt-auth")
 public class JWTContextInfo {
 
-    @ConfigValue("public-key")
-    private String publicKey;
+    private static final Logger LOG = Logger.getLogger(JWTContextInfo.class.getName());
+
     private RSAPublicKey publicKeyDecoded;
 
-    @ConfigValue("jwks-uri")
     private String jwksUri;
     private JwksRSAKeyProvider jwkProvider;
 
-    @ConfigValue("issuer")
     private String issuer;
 
     @PostConstruct
     public void init() {
-        if (publicKey != null) {
+        ConfigurationUtil config = ConfigurationUtil.getInstance();
+        String publicKey;
+        publicKey = config.get("mp.jwt.verify.publickey")
+                .orElse(config.get("kumuluzee.jwt-auth.public-key").orElse(null));
+
+        if (publicKey == null) {
+            String location = config.get("mp.jwt.verify.publickey.location").orElse(null);
+
+            if (location != null) {
+                URL url;
+
+                try {
+                    url = new URL(location);
+                } catch (MalformedURLException e) {
+                    url = getClass().getClassLoader().getResource(location.substring(1));
+                }
+
+                if (url != null) {
+                    try {
+                        publicKey = new BufferedReader(new InputStreamReader(url.openStream())).lines()
+                                .collect(Collectors.joining("\n"));
+                    } catch (IOException e) {
+                        LOG.log(Level.SEVERE, "Could not resolve public key from " + url.toExternalForm(), e);
+                    }
+                }
+            }
+        }
+        publicKeyDecoded = decodeJWK(publicKey);
+
+        if (publicKey != null && publicKeyDecoded == null) {
+            // remove header and footer
+            publicKey = publicKey.replaceAll("-+BEGIN PUBLIC KEY-+", "");
+            publicKey = publicKey.replaceAll("-+END PUBLIC KEY-+", "");
+            // remove all non base64 characters
+            publicKey = publicKey.replaceAll("[^A-Za-z0-9+/=]", "");
+
+            publicKeyDecoded = decodeJWK(new String(Base64.getDecoder().decode(publicKey)));
+        }
+
+        if (publicKey != null && publicKeyDecoded == null) {
             try {
                 byte[] publicKeyBytes = Base64.getDecoder().decode(publicKey);
                 X509EncodedKeySpec publicKeyX509 = new X509EncodedKeySpec(publicKeyBytes);
@@ -67,6 +115,15 @@ public class JWTContextInfo {
             }
         }
 
+        jwksUri = config.get("kumuluzee.jwt-auth.jwks-uri").orElse(null);
+
+        issuer = config.get("mp.jwt.verify.issuer")
+                .orElse(config.get("kumuluzee.jwt-auth.issuer").orElse(null));
+
+        initJwks();
+    }
+
+    public void initJwks() {
         if (jwksUri != null) {
             try {
                 jwkProvider = new JwksRSAKeyProvider(new URL(jwksUri));
@@ -74,14 +131,6 @@ public class JWTContextInfo {
                 throw new IllegalArgumentException("The provided kumuluzee.jwt-auth.jwks-uri is not a valid URL.", e);
             }
         }
-    }
-
-    public String getPublicKey() {
-        return publicKey;
-    }
-
-    public void setPublicKey(String publicKey) {
-        this.publicKey = publicKey;
     }
 
     public RSAPublicKey getDecodedPublicKey() {
@@ -106,5 +155,28 @@ public class JWTContextInfo {
 
     public void setIssuer(String issuer) {
         this.issuer = issuer;
+    }
+
+    @SuppressWarnings("unchecked")
+    private RSAPublicKey decodeJWK(String jwk) {
+        try {
+            Map<String, Object> vals = new ObjectMapper().readValue(jwk, new TypeReference<Map<String, Object>>() {
+            });
+            if (vals.containsKey("keys") && vals.get("keys") instanceof List &&
+                    ((List) vals.get("keys")).get(0) instanceof Map) {
+                vals = (Map<String, Object>) ((List) vals.get("keys")).get(0);
+            }
+            if (vals.containsKey("n") && vals.containsKey("e") &&
+                    vals.get("n") instanceof String && vals.get("e") instanceof String) {
+                BigInteger modulus = new BigInteger(1, Base64.getUrlDecoder().decode(((String) vals.get("n"))));
+                BigInteger exponent = new BigInteger(1, Base64.getUrlDecoder().decode(((String) vals.get("e"))));
+
+                return (RSAPublicKey) KeyFactory.getInstance("RSA")
+                        .generatePublic(new RSAPublicKeySpec(modulus, exponent));
+            }
+        } catch (Exception ignored) {
+        }
+
+        return null;
     }
 }

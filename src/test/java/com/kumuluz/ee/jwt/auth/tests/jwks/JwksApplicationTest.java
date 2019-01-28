@@ -59,7 +59,7 @@ public class JwksApplicationTest extends Arquillian {
 
     private JwksServer jwksServer;
 
-    @Test(priority = -1, groups = "jwks")
+    @Test(priority = 0, groups = "jwks")
     @RunAsClient
     public void startJwksServer() {
         try {
@@ -76,10 +76,10 @@ public class JwksApplicationTest extends Arquillian {
         jwksServer.stop();
     }
 
-    @Test(groups = "jwks")
+    @Test(groups = "jwks", priority = 1)
     @RunAsClient
     public void authTest() throws URISyntaxException {
-        Response received = ClientBuilder.newClient().target(baseURL + "/test")
+        Response received = ClientBuilder.newClient().target(baseURL + "test")
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer:" + new JwtTool(new KeyTool(
                         getClass().getResource("/good_key.pem").toURI()), "http://example.com")
@@ -91,10 +91,10 @@ public class JwksApplicationTest extends Arquillian {
         Assert.assertEquals(received.getStatus(), 200);
     }
 
-    @Test(groups = "jwks")
+    @Test(groups = "jwks", priority = 1)
     @RunAsClient
     public void invalidRoleTest() throws URISyntaxException {
-        Response received = ClientBuilder.newClient().target(baseURL + "/test/disallowed")
+        Response received = ClientBuilder.newClient().target(baseURL + "test/disallowed")
                 .request(MediaType.APPLICATION_JSON)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer:" + new JwtTool(new KeyTool(
                         getClass().getResource("/good_key.pem").toURI()), "http://example.com")
