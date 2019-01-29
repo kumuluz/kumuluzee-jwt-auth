@@ -37,6 +37,14 @@ kumuluzee:
     issuer: http://example.org/auth
 ``` 
 
+The supplied public key can be in any of the following formats:
+
+- PKCS#8 PEM
+- JWK
+- JWKS
+- Base64 URL encoded JWK
+- Base64 URL encoded JWKS
+
 If, on the other hand, you use JWKS as a source for your verification keys then you instead provide following two
 configuration properties:
 
