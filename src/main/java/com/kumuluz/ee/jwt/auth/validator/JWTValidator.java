@@ -57,7 +57,10 @@ public class JWTValidator {
             }
         }
 
-        JWTVerifier verifier = JWT.require(algorithm).withIssuer(jwtContextInfo.getIssuer()).build();
+        JWTVerifier verifier = JWT.require(algorithm)
+                .withIssuer(jwtContextInfo.getIssuer())
+                .acceptLeeway(jwtContextInfo.getMaximumLeeway())
+                .build();
 
         DecodedJWT jwt;
         try {
