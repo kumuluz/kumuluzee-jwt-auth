@@ -63,6 +63,8 @@ public class JWTContextInfo {
 
     private String issuer;
 
+    private int maximumLeeway;
+
     @PostConstruct
     public void init() {
         ConfigurationUtil config = ConfigurationUtil.getInstance();
@@ -120,6 +122,8 @@ public class JWTContextInfo {
         issuer = config.get("mp.jwt.verify.issuer")
                 .orElse(config.get("kumuluzee.jwt-auth.issuer").orElse(null));
 
+        maximumLeeway = Integer.parseInt(config.get("kumuluzee.jwt-auth.maximum-leeway").orElse("5"));
+
         initJwks();
     }
 
@@ -155,6 +159,14 @@ public class JWTContextInfo {
 
     public void setIssuer(String issuer) {
         this.issuer = issuer;
+    }
+
+    public int getMaximumLeeway() {
+        return maximumLeeway;
+    }
+
+    public void setMaximumLeeway(int maximumLeeway) {
+        this.maximumLeeway = maximumLeeway;
     }
 
     @SuppressWarnings("unchecked")

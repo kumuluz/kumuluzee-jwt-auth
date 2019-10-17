@@ -62,6 +62,9 @@ If both `public-key` and `jwks-uri` are set, the `jwks-uri` takes precedence and
 
 JWT authentication can be disabled by setting the `kumuluzee.jwt-auth.enabled` configuration property to `false`.
 
+You can configure the maximum leeway the authenticator allows for timestamp claims (such as _nbf_ or _iat_) by
+setting `kumuluzee.jwt-auth.maximum-leeway`. The default value is `5`, meaning five seconds.
+
 ##  Accessing token information
 
 There are multiple ways with which you can access the decoded token data. The standard way is to access the principal 
