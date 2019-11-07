@@ -6,7 +6,7 @@
 
     <groupId>com.kumuluz.ee.jwt</groupId>
     <artifactId>kumuluzee-jwt-auth</artifactId>
-    <version>1.1.2</version>
+    <version>1.2.0-SNAPSHOT</version>
 
     <name>KumuluzEE JWT Auth</name>
 
