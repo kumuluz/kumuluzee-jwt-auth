@@ -97,7 +97,6 @@ public class JWTPrincipal implements JsonWebToken {
         return issuer.getString();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Set<String> getAudience() {
         JsonString audience = (JsonString) jsonClaims.get(Claims.aud.name());
@@ -127,7 +126,6 @@ public class JWTPrincipal implements JsonWebToken {
     @Override
     public long getExpirationTime() {
         JsonNumber expirationType = (JsonNumber) jsonClaims.get(Claims.exp.name());
-
         if (expirationType == null) {
             return 0;
         }
@@ -138,7 +136,6 @@ public class JWTPrincipal implements JsonWebToken {
     @Override
     public long getIssuedAtTime() {
         JsonNumber issuedAtTime = (JsonNumber) jsonClaims.get(Claims.iat.name());
-
         if (issuedAtTime == null) {
             return 0;
         }
@@ -156,7 +153,6 @@ public class JWTPrincipal implements JsonWebToken {
         return rawToken.getString();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Set<String> getGroups() {
         JsonArray groupList = (JsonArray) jsonClaims.get(Claims.groups.name());
@@ -220,6 +216,7 @@ public class JWTPrincipal implements JsonWebToken {
         return claim;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T getClaimForInjection(String claimName) {
         Claims claimType = Claims.UNKNOWN;
         T claim = null;
@@ -246,6 +243,7 @@ public class JWTPrincipal implements JsonWebToken {
         return claim;
     }
 
+    @SuppressWarnings("unchecked")
     private void convertClaims() {
         convertedClaims = new HashMap<>();
         jsonClaims = new HashMap<>();

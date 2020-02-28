@@ -47,7 +47,6 @@ import java.lang.reflect.Method;
 public class JWTRolesAllowedDynamicFeature implements DynamicFeature {
 
     public void configure(ResourceInfo resourceInfo, FeatureContext configuration) {
-
         if (!FeatureDisabledSingleton.getInstance().isEnabled()) {
             return;
         }
@@ -86,7 +85,7 @@ public class JWTRolesAllowedDynamicFeature implements DynamicFeature {
 
         public void filter(ContainerRequestContext requestContext) throws IOException {
             if (!this.denyAll) {
-                if (!isAuthenticated(requestContext)) {
+                if (rolesAllowed.length > 0 && !isAuthenticated(requestContext)) {
                     requestContext.abortWith(
                             Response
                                     .status(Response.Status.UNAUTHORIZED)

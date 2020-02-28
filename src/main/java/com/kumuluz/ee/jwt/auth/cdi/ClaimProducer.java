@@ -63,7 +63,6 @@ public class ClaimProducer {
         return claim.getString();
     }
 
-    @SuppressWarnings("unchecked")
     @Produces
     @Claim
     public Set<String> getClaimAsStringSet(InjectionPoint injectionPoint) {
@@ -99,7 +98,7 @@ public class ClaimProducer {
 
         if (claim.getValueType().equals(JsonValue.ValueType.TRUE)) {
             return Boolean.TRUE;
-        } else if (claim.getValueType().equals(JsonValue.ValueType.TRUE)) {
+        } else if (claim.getValueType().equals(JsonValue.ValueType.FALSE)) {
             return Boolean.FALSE;
         }
 

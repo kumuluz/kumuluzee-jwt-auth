@@ -85,8 +85,8 @@ public class JWTContextInfo {
                 }
 
                 if (url != null) {
-                    try {
-                        publicKey = new BufferedReader(new InputStreamReader(url.openStream())).lines()
+                    try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(url.openStream()))) {
+                        publicKey = bufferedReader.lines()
                                 .collect(Collectors.joining("\n"));
                     } catch (IOException e) {
                         LOG.log(Level.SEVERE, "Could not resolve public key from " + url.toExternalForm(), e);
@@ -174,12 +174,10 @@ public class JWTContextInfo {
         try {
             Map<String, Object> vals = new ObjectMapper().readValue(jwk, new TypeReference<Map<String, Object>>() {
             });
-            if (vals.containsKey("keys") && vals.get("keys") instanceof List &&
-                    ((List) vals.get("keys")).get(0) instanceof Map) {
+            if (vals.containsKey("keys") && vals.get("keys") instanceof List && ((List) vals.get("keys")).get(0) instanceof Map) {
                 vals = (Map<String, Object>) ((List) vals.get("keys")).get(0);
             }
-            if (vals.containsKey("n") && vals.containsKey("e") &&
-                    vals.get("n") instanceof String && vals.get("e") instanceof String) {
+            if (vals.containsKey("n") && vals.containsKey("e") && vals.get("n") instanceof String && vals.get("e") instanceof String) {
                 BigInteger modulus = new BigInteger(1, Base64.getUrlDecoder().decode(((String) vals.get("n"))));
                 BigInteger exponent = new BigInteger(1, Base64.getUrlDecoder().decode(((String) vals.get("e"))));
 
