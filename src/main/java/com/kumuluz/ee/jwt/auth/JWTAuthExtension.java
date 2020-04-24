@@ -45,17 +45,17 @@ import java.util.logging.Logger;
 })
 public class JWTAuthExtension implements Extension {
 
-    private static final Logger log = Logger.getLogger(JWTAuthExtension.class.getName());
+    private static final Logger LOG = Logger.getLogger(JWTAuthExtension.class.getName());
 
     @Override
     public void init(KumuluzServerWrapper kumuluzServerWrapper, EeConfig eeConfig) {
-        log.info("Initialising JWT auth extension.");
+        LOG.info("Initialising JWT auth extension.");
         FeatureDisabledSingleton.init(true);
     }
 
     @Override
     public void load() {
-        log.info("Initialised JWT auth extension.");
+        LOG.info("Initialised JWT auth extension.");
     }
 
     @Override

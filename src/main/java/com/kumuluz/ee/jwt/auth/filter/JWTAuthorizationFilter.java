@@ -73,15 +73,25 @@ public class JWTAuthorizationFilter implements ContainerRequestFilter {
             authorization = requestContext.getHeaderString(AUTHORIZATION_HEADER);
         }
 
-        if (authorization != null && authorization.startsWith(BEARER_AUTHORIZATION_TOKEN_NAME)) {
-            try {
-                String token = authorization.substring(BEARER_AUTHORIZATION_TOKEN_NAME.length() + 1);
-                JWTPrincipal jwtPrincipal = validateToken(token, jwtContextInfo);
-                final SecurityContext securityContext = requestContext.getSecurityContext();
-                JWTSecurityContext jwtSecurityContext = new JWTSecurityContext(securityContext, jwtPrincipal);
-                requestContext.setSecurityContext(jwtSecurityContext);
-            } catch (Exception e) {
-                LOG.fine("Authentication failed: " + e.getMessage());
+        if (authorization != null) {
+            if (authorization.startsWith(BEARER_AUTHORIZATION_TOKEN_NAME)) {
+                try {
+                    String token = authorization.substring(BEARER_AUTHORIZATION_TOKEN_NAME.length() + 1);
+                    JWTPrincipal jwtPrincipal = validateToken(token, jwtContextInfo);
+                    final SecurityContext securityContext = requestContext.getSecurityContext();
+                    JWTSecurityContext jwtSecurityContext = new JWTSecurityContext(securityContext, jwtPrincipal);
+                    requestContext.setSecurityContext(jwtSecurityContext);
+                } catch (Exception e) {
+                    LOG.fine("Authentication failed: " + e.getMessage());
+                    requestContext.abortWith(
+                            Response
+                                    .status(Response.Status.UNAUTHORIZED)
+                                    .header(HttpHeaders.WWW_AUTHENTICATE, "Bearer realm=\"MP-JWT\"")
+                                    .build()
+                    );
+                }
+            } else {
+                LOG.fine("Authentication failed due to missing Authorization bearer token.");
                 requestContext.abortWith(
                         Response
                                 .status(Response.Status.UNAUTHORIZED)
@@ -89,14 +99,6 @@ public class JWTAuthorizationFilter implements ContainerRequestFilter {
                                 .build()
                 );
             }
-        } else {
-            LOG.fine("Authentication failed due to missing Authorization bearer token.");
-            requestContext.abortWith(
-                    Response
-                            .status(Response.Status.UNAUTHORIZED)
-                            .header(HttpHeaders.WWW_AUTHENTICATE, "Bearer realm=\"MP-JWT\"")
-                            .build()
-            );
         }
     }
 

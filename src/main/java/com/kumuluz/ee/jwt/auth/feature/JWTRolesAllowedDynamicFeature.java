@@ -51,20 +51,33 @@ public class JWTRolesAllowedDynamicFeature implements DynamicFeature {
             return;
         }
 
-        Method resourceMethod = resourceInfo.getResourceMethod();
+        final Method resourceMethod = resourceInfo.getResourceMethod();
+
         if (resourceMethod.isAnnotationPresent(DenyAll.class)) {
             configuration.register(new JWTRolesAllowedDynamicFeature.RolesAllowedRequestFilter());
-        } else {
-            RolesAllowed rolesAllowedAnnotation = resourceMethod.getAnnotation(RolesAllowed.class);
-            if (rolesAllowedAnnotation != null) {
-                configuration.register(new JWTRolesAllowedDynamicFeature.RolesAllowedRequestFilter(rolesAllowedAnnotation.value()));
-            } else if (!resourceMethod.isAnnotationPresent(PermitAll.class)) {
-                rolesAllowedAnnotation =  resourceInfo.getResourceClass().getAnnotation(RolesAllowed.class);
+            return;
+        }
 
-                if (rolesAllowedAnnotation != null) {
-                    configuration.register(new JWTRolesAllowedDynamicFeature.RolesAllowedRequestFilter(rolesAllowedAnnotation.value()));
-                }
-            }
+        RolesAllowed rolesAllowedAnnotation = resourceMethod.getAnnotation(RolesAllowed.class);
+        if (rolesAllowedAnnotation != null) {
+            configuration.register(new JWTRolesAllowedDynamicFeature.RolesAllowedRequestFilter(rolesAllowedAnnotation.value()));
+            return;
+        }
+
+        if (resourceMethod.isAnnotationPresent(PermitAll.class)) {
+            return;
+        }
+
+        final Class<?> resourceClass = resourceInfo.getResourceClass();
+
+        if (resourceClass.isAnnotationPresent(DenyAll.class)) {
+            configuration.register(new JWTRolesAllowedDynamicFeature.RolesAllowedRequestFilter());
+            return;
+        }
+
+        RolesAllowed classRolesAllowedAnnotation =  resourceClass.getAnnotation(RolesAllowed.class);
+        if (classRolesAllowedAnnotation != null) {
+            configuration.register(new JWTRolesAllowedDynamicFeature.RolesAllowedRequestFilter(classRolesAllowedAnnotation.value()));
         }
     }
 
