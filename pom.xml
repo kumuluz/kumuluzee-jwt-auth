@@ -29,7 +29,7 @@
         <microprofile-jwt-auth.version>1.1.1</microprofile-jwt-auth.version>
         <java-jwt.version>3.8.3</java-jwt.version>
         <jwks-rsa.version>0.9.0</jwks-rsa.version>
-        <jackson.version>2.9.10.4</jackson.version>
+        <jackson.version>2.10.0</jackson.version>
 
         <kumuluzee-arquillian-container.version>1.1.0</kumuluzee-arquillian-container.version>
         <testng.version>6.9.9</testng.version>
@@ -137,13 +137,23 @@
             <groupId>com.auth0</groupId>
             <artifactId>jwks-rsa</artifactId>
             <version>${jwks-rsa.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${jackson.version}</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.eclipse.microprofile.jwt</groupId>
