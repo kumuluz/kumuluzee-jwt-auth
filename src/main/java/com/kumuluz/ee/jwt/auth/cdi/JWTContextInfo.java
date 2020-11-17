@@ -20,6 +20,8 @@
  */
 package com.kumuluz.ee.jwt.auth.cdi;
 
+import com.auth0.jwk.JwkProvider;
+import com.auth0.jwk.UrlJwkProvider;
 import com.auth0.jwt.interfaces.RSAKeyProvider;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,6 +43,7 @@ import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -56,10 +59,13 @@ public class JWTContextInfo {
 
     private static final Logger LOG = Logger.getLogger(JWTContextInfo.class.getName());
 
+    private static final String DEFAULT_JWKS_PATH = "/.well-known/jwks.json";
+
     private RSAPublicKey publicKeyDecoded;
 
     private String jwksUri;
-    private JwksRSAKeyProvider jwkProvider;
+    private JwkProvider jwkProvider;
+    private RSAKeyProvider rsaKeyProvider;
 
     private String issuer;
 
@@ -68,14 +74,18 @@ public class JWTContextInfo {
     @PostConstruct
     public void init() {
         ConfigurationUtil config = ConfigurationUtil.getInstance();
-        String publicKey;
-        publicKey = config.get("mp.jwt.verify.publickey")
-                .orElse(config.get("kumuluzee.jwt-auth.public-key").orElse(null));
 
-        if (publicKey == null) {
+        Optional<String> mpPublicKey = config.get("mp.jwt.verify.publickey");
+        String publicKey = mpPublicKey.orElse(config.get("kumuluzee.jwt-auth.public-key").orElse(null));
+
+        if ((mpPublicKey.isPresent() && mpPublicKey.get().startsWith("{location=")) || publicKey == null) {
             String location = config.get("mp.jwt.verify.publickey.location").orElse(null);
 
             if (location != null) {
+                if (location.endsWith(DEFAULT_JWKS_PATH)) {
+                    jwkProvider = new UrlJwkProvider(location.replace(DEFAULT_JWKS_PATH, ""));
+                    return;
+                }
                 URL url;
 
                 try {
@@ -130,7 +140,7 @@ public class JWTContextInfo {
     public void initJwks() {
         if (jwksUri != null) {
             try {
-                jwkProvider = new JwksRSAKeyProvider(new URL(jwksUri));
+                rsaKeyProvider = new JwksRSAKeyProvider(new URL(jwksUri));
             } catch (MalformedURLException e) {
                 throw new IllegalArgumentException("The provided kumuluzee.jwt-auth.jwks-uri is not a valid URL.", e);
             }
@@ -149,8 +159,12 @@ public class JWTContextInfo {
         this.jwksUri = jwksUri;
     }
 
-    public RSAKeyProvider getJwkProvider() {
+    public JwkProvider getJwkProvider() {
         return jwkProvider;
+    }
+
+    public RSAKeyProvider getRsaKeyProvider() {
+        return rsaKeyProvider;
     }
 
     public String getIssuer() {
