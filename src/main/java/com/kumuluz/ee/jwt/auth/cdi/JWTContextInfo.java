@@ -57,6 +57,8 @@ public class JWTContextInfo {
     private static final String MP_CONFIG_PUBLIC_KEY = "mp.jwt.verify.publickey";
     private static final String KUMULUZ_CONFIG_PUBLIC_KEY = "kumuluzee.jwt-auth.public-key";
 
+    private static final String DEFAULT_LEEWAY_SECONDS = "60";
+
     private RSAPublicKey publicKeyDecoded;
 
     private String jwksUri;
@@ -72,7 +74,7 @@ public class JWTContextInfo {
         ConfigurationUtil config = ConfigurationUtil.getInstance();
 
         issuer = config.get("mp.jwt.verify.issuer").orElse(config.get("kumuluzee.jwt-auth.issuer").orElse(null));
-        maximumLeeway = Integer.parseInt(config.get("kumuluzee.jwt-auth.maximum-leeway").orElse("5"));
+        maximumLeeway = Integer.parseInt(config.get("kumuluzee.jwt-auth.maximum-leeway").orElse(DEFAULT_LEEWAY_SECONDS));
 
         final List<String> publickeyChildKeys = config.getMapKeys(MP_CONFIG_PUBLIC_KEY).orElse(null);
         String keyLocation = publickeyChildKeys != null && publickeyChildKeys.contains("location") ? config.get(MP_CONFIG_PUBLIC_KEY + ".location").orElse(null) : null;
