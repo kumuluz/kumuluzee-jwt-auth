@@ -121,6 +121,7 @@ public class JWTContextInfo {
                 publicKeyPayload = publicKeyPayload.replaceAll("[^A-Za-z0-9+/=]", "");
 
                 byte[] publicKeyBytes = Base64.getDecoder().decode(publicKeyPayload);
+
                 X509EncodedKeySpec publicKeyX509 = new X509EncodedKeySpec(publicKeyBytes);
                 KeyFactory kf = KeyFactory.getInstance("RSA");
                 publicKeyDecoded = (RSAPublicKey) kf.generatePublic(publicKeyX509);
@@ -189,13 +190,22 @@ public class JWTContextInfo {
         public KumuluzJwkProvider(String jwkPayload) throws SigningKeyNotFoundException {
 
             try {
-                Map<String, Object> jwks = new ObjectMapper().readValue(jwkPayload, new TypeReference<Map<String, Object>>() {
-                });
+                Map<String, Object> jwks;
+                try {
+                    //try if base64
+                    byte[] decoded = Base64.getDecoder().decode(jwkPayload);
+                    jwks = new ObjectMapper().readValue(decoded, new TypeReference<Map<String, Object>>() {
+                    });
+                } catch (IllegalArgumentException e) {
+                    jwks = new ObjectMapper().readValue(jwkPayload, new TypeReference<Map<String, Object>>() {
+                    });
+                }
 
                 this.jwkMap = new HashMap<>();
 
                 List<Map<String, Object>> keys = (List) jwks.get("keys");
                 if (keys != null && !keys.isEmpty()) {
+                    //multiple keys
                     try {
                         Iterator var3 = keys.iterator();
 
@@ -207,6 +217,10 @@ public class JWTContextInfo {
                     } catch (IllegalArgumentException var5) {
                         throw new SigningKeyNotFoundException("Failed to parse jwk from json", var5);
                     }
+                } else if (jwks.containsKey("n") && jwks.containsKey("e") && jwks.get("n") instanceof String && jwks.get("e") instanceof String) {
+                    //one key
+                    Jwk jwk = Jwk.fromValues(jwks);
+                    jwkMap.put(jwk.getId(), jwk);
                 } else {
                     throw new SigningKeyNotFoundException("No keys found in payload", null);
                 }
