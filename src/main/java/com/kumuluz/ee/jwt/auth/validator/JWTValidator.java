@@ -20,6 +20,8 @@
  */
 package com.kumuluz.ee.jwt.auth.validator;
 
+import com.auth0.jwk.Jwk;
+import com.auth0.jwk.JwkException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -30,9 +32,9 @@ import com.auth0.jwt.interfaces.RSAKeyProvider;
 import com.kumuluz.ee.jwt.auth.cdi.JWTContextInfo;
 import com.kumuluz.ee.jwt.auth.helper.ClaimHelper;
 import com.kumuluz.ee.jwt.auth.principal.JWTPrincipal;
-import java.security.interfaces.RSAPublicKey;
 import org.eclipse.microprofile.jwt.Claims;
 
+import java.security.interfaces.RSAPublicKey;
 import java.util.Map;
 
 /**
@@ -44,10 +46,26 @@ import java.util.Map;
 public class JWTValidator {
 
     public static JWTPrincipal validateToken(String token, JWTContextInfo jwtContextInfo) throws JWTValidationException {
+
+        DecodedJWT jwt;
+        try {
+            jwt = JWT.decode(token);
+        } catch (JWTVerificationException e) {
+            throw new JWTValidationException("Failed to validate token.", e);
+        }
+
         Algorithm algorithm;
-        RSAKeyProvider jwkProvider = jwtContextInfo.getJwkProvider();
-        if (jwkProvider != null) {
-            algorithm = Algorithm.RSA256(jwkProvider);
+        RSAKeyProvider keyProvider = jwtContextInfo.getRsaKeyProvider();
+        if (keyProvider != null) {
+            algorithm = Algorithm.RSA256(keyProvider);
+        } else if (jwtContextInfo.getJwkProvider() != null) {
+            Jwk jwk;
+            try {
+                jwk = jwtContextInfo.getJwkProvider().get(jwt.getKeyId());
+                algorithm = Algorithm.RSA256((RSAPublicKey) jwk.getPublicKey(), null);
+            } catch (JwkException e) {
+                throw new JWTValidationException("Failed to load jwks.", e);
+            }
         } else {
             final RSAPublicKey decodedPublicKey = jwtContextInfo.getDecodedPublicKey();
             if (decodedPublicKey != null) {
@@ -62,9 +80,8 @@ public class JWTValidator {
                 .acceptLeeway(jwtContextInfo.getMaximumLeeway())
                 .build();
 
-        DecodedJWT jwt;
         try {
-            jwt = verifier.verify(token);
+            verifier.verify(jwt);
         } catch (JWTVerificationException e) {
             throw new JWTValidationException("Failed to validate token.", e);
         }

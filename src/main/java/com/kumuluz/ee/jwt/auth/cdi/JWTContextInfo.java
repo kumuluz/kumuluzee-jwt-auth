@@ -20,6 +20,7 @@
  */
 package com.kumuluz.ee.jwt.auth.cdi;
 
+import com.auth0.jwk.*;
 import com.auth0.jwt.interfaces.RSAKeyProvider;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,16 +32,12 @@ import javax.enterprise.context.ApplicationScoped;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.math.BigInteger;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyFactory;
 import java.security.interfaces.RSAPublicKey;
-import java.security.spec.RSAPublicKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -56,10 +53,17 @@ public class JWTContextInfo {
 
     private static final Logger LOG = Logger.getLogger(JWTContextInfo.class.getName());
 
+    private static final String DEFAULT_JWKS_PATH = "/.well-known/jwks.json";
+    private static final String MP_CONFIG_PUBLIC_KEY = "mp.jwt.verify.publickey";
+    private static final String KUMULUZ_CONFIG_PUBLIC_KEY = "kumuluzee.jwt-auth.public-key";
+
+    private static final String DEFAULT_LEEWAY_SECONDS = "60";
+
     private RSAPublicKey publicKeyDecoded;
 
     private String jwksUri;
-    private JwksRSAKeyProvider jwkProvider;
+    private JwkProvider jwkProvider;
+    private RSAKeyProvider rsaKeyProvider;
 
     private String issuer;
 
@@ -68,69 +72,74 @@ public class JWTContextInfo {
     @PostConstruct
     public void init() {
         ConfigurationUtil config = ConfigurationUtil.getInstance();
-        String publicKey;
-        publicKey = config.get("mp.jwt.verify.publickey")
-                .orElse(config.get("kumuluzee.jwt-auth.public-key").orElse(null));
 
-        if (publicKey == null) {
-            String location = config.get("mp.jwt.verify.publickey.location").orElse(null);
+        issuer = config.get("mp.jwt.verify.issuer").orElse(config.get("kumuluzee.jwt-auth.issuer").orElse(null));
+        maximumLeeway = Integer.parseInt(config.get("kumuluzee.jwt-auth.maximum-leeway").orElse(DEFAULT_LEEWAY_SECONDS));
 
-            if (location != null) {
-                URL url;
+        final List<String> publickeyChildKeys = config.getMapKeys(MP_CONFIG_PUBLIC_KEY).orElse(null);
+        String keyLocation = publickeyChildKeys != null && publickeyChildKeys.contains("location") ? config.get(MP_CONFIG_PUBLIC_KEY + ".location").orElse(null) : null;
+        String publicKeyPayload = config.get(MP_CONFIG_PUBLIC_KEY).orElse(config.get(KUMULUZ_CONFIG_PUBLIC_KEY).orElse(null));
 
-                try {
-                    url = new URL(location);
-                } catch (MalformedURLException e) {
-                    url = getClass().getClassLoader().getResource(location.substring(1));
-                }
+        //jwks url
+        if (keyLocation != null && keyLocation.endsWith(DEFAULT_JWKS_PATH)) {
+            jwkProvider = new UrlJwkProvider(keyLocation.replace(DEFAULT_JWKS_PATH, ""));
+            LOG.fine(() -> "Loaded JWKS key from " + keyLocation);
+            return;
+        }
 
-                if (url != null) {
-                    try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(url.openStream()))) {
-                        publicKey = bufferedReader.lines()
-                                .collect(Collectors.joining("\n"));
-                    } catch (IOException e) {
-                        LOG.log(Level.SEVERE, "Could not resolve public key from " + url.toExternalForm(), e);
-                    }
+        //public key url
+        if (keyLocation != null) {
+            URL url;
+            try {
+                url = new URL(keyLocation);
+            } catch (MalformedURLException e) {
+                url = getClass().getClassLoader().getResource(keyLocation.substring(1));
+            }
+
+            if (url != null) {
+                try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(url.openStream()))) {
+                    publicKeyPayload = bufferedReader.lines()
+                            .collect(Collectors.joining("\n"));
+                } catch (IOException e) {
+                    LOG.log(Level.SEVERE, "Could not resolve public key from " + url.toExternalForm(), e);
                 }
             }
         }
-        publicKeyDecoded = decodeJWK(publicKey);
 
-        if (publicKey != null && publicKeyDecoded == null) {
-            // remove header and footer
-            publicKey = publicKey.replaceAll("-+BEGIN PUBLIC KEY-+", "");
-            publicKey = publicKey.replaceAll("-+END PUBLIC KEY-+", "");
-            // remove all non base64 characters
-            publicKey = publicKey.replaceAll("[^A-Za-z0-9+/=]", "");
-
-            publicKeyDecoded = decodeJWK(new String(Base64.getDecoder().decode(publicKey)));
-        }
-
-        if (publicKey != null && publicKeyDecoded == null) {
+        if (publicKeyPayload != null) {
+            //config key payload
             try {
-                byte[] publicKeyBytes = Base64.getDecoder().decode(publicKey);
+                jwkProvider = new KumuluzJwkProvider(publicKeyPayload);
+                return;
+            } catch (SigningKeyNotFoundException e) {
+            }
+
+            try {
+                // remove header and footer
+                publicKeyPayload = publicKeyPayload.replaceAll("-+BEGIN PUBLIC KEY-+", "").replaceAll("-+END PUBLIC KEY-+", "");
+                // remove all non base64 characters
+                publicKeyPayload = publicKeyPayload.replaceAll("[^A-Za-z0-9+/=]", "");
+
+                byte[] publicKeyBytes = Base64.getDecoder().decode(publicKeyPayload);
+
                 X509EncodedKeySpec publicKeyX509 = new X509EncodedKeySpec(publicKeyBytes);
                 KeyFactory kf = KeyFactory.getInstance("RSA");
                 publicKeyDecoded = (RSAPublicKey) kf.generatePublic(publicKeyX509);
             } catch (Exception e) {
                 // ignore
             }
+        } else {
+            LOG.fine(() -> "No public keys payload provided");
         }
 
         jwksUri = config.get("kumuluzee.jwt-auth.jwks-uri").orElse(null);
-
-        issuer = config.get("mp.jwt.verify.issuer")
-                .orElse(config.get("kumuluzee.jwt-auth.issuer").orElse(null));
-
-        maximumLeeway = Integer.parseInt(config.get("kumuluzee.jwt-auth.maximum-leeway").orElse("5"));
-
         initJwks();
     }
 
     public void initJwks() {
         if (jwksUri != null) {
             try {
-                jwkProvider = new JwksRSAKeyProvider(new URL(jwksUri));
+                rsaKeyProvider = new JwksRSAKeyProvider(new URL(jwksUri));
             } catch (MalformedURLException e) {
                 throw new IllegalArgumentException("The provided kumuluzee.jwt-auth.jwks-uri is not a valid URL.", e);
             }
@@ -149,8 +158,12 @@ public class JWTContextInfo {
         this.jwksUri = jwksUri;
     }
 
-    public RSAKeyProvider getJwkProvider() {
+    public JwkProvider getJwkProvider() {
         return jwkProvider;
+    }
+
+    public RSAKeyProvider getRsaKeyProvider() {
+        return rsaKeyProvider;
     }
 
     public String getIssuer() {
@@ -169,24 +182,63 @@ public class JWTContextInfo {
         this.maximumLeeway = maximumLeeway;
     }
 
-    @SuppressWarnings("unchecked")
-    private RSAPublicKey decodeJWK(String jwk) {
-        try {
-            Map<String, Object> vals = new ObjectMapper().readValue(jwk, new TypeReference<Map<String, Object>>() {
-            });
-            if (vals.containsKey("keys") && vals.get("keys") instanceof List && ((List) vals.get("keys")).get(0) instanceof Map) {
-                vals = (Map<String, Object>) ((List) vals.get("keys")).get(0);
-            }
-            if (vals.containsKey("n") && vals.containsKey("e") && vals.get("n") instanceof String && vals.get("e") instanceof String) {
-                BigInteger modulus = new BigInteger(1, Base64.getUrlDecoder().decode(((String) vals.get("n"))));
-                BigInteger exponent = new BigInteger(1, Base64.getUrlDecoder().decode(((String) vals.get("e"))));
+    protected static class KumuluzJwkProvider implements JwkProvider {
 
-                return (RSAPublicKey) KeyFactory.getInstance("RSA")
-                        .generatePublic(new RSAPublicKeySpec(modulus, exponent));
+        private Map<String, Jwk> jwkMap;
+
+        @SuppressWarnings("unchecked")
+        public KumuluzJwkProvider(String jwkPayload) throws SigningKeyNotFoundException {
+
+            try {
+                Map<String, Object> jwks;
+                try {
+                    //try if base64
+                    byte[] decoded = Base64.getDecoder().decode(jwkPayload);
+                    jwks = new ObjectMapper().readValue(decoded, new TypeReference<Map<String, Object>>() {
+                    });
+                } catch (IllegalArgumentException e) {
+                    jwks = new ObjectMapper().readValue(jwkPayload, new TypeReference<Map<String, Object>>() {
+                    });
+                }
+
+                this.jwkMap = new HashMap<>();
+
+                List<Map<String, Object>> keys = (List) jwks.get("keys");
+                if (keys != null && !keys.isEmpty()) {
+                    //multiple keys
+                    try {
+                        Iterator var3 = keys.iterator();
+
+                        while (var3.hasNext()) {
+                            Map<String, Object> values = (Map) var3.next();
+                            Jwk jwk = Jwk.fromValues(values);
+                            jwkMap.put(jwk.getId(), jwk);
+                        }
+                    } catch (IllegalArgumentException var5) {
+                        throw new SigningKeyNotFoundException("Failed to parse jwk from json", var5);
+                    }
+                } else if (jwks.containsKey("n") && jwks.containsKey("e") && jwks.get("n") instanceof String && jwks.get("e") instanceof String) {
+                    //one key
+                    Jwk jwk = Jwk.fromValues(jwks);
+                    jwkMap.put(jwk.getId(), jwk);
+                } else {
+                    throw new SigningKeyNotFoundException("No keys found in payload", null);
+                }
+
+            } catch (Exception e) {
+                throw new SigningKeyNotFoundException("No keys found in payload", e);
             }
-        } catch (Exception ignored) {
         }
 
-        return null;
+        @Override
+        public Jwk get(String keyId) throws JwkException {
+
+            if (jwkMap.containsKey(keyId)) {
+                return jwkMap.get(keyId);
+            }
+
+            throw new SigningKeyNotFoundException("No key found in Kumuluz JWK provider with kid " + keyId, null);
+        }
     }
+
 }
