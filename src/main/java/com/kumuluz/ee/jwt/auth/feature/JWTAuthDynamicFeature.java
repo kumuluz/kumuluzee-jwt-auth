@@ -18,46 +18,38 @@
  *  software. See the License for the specific language governing permissions and
  *  limitations under the License.
  */
-package com.kumuluz.ee.jwt.auth.context;
+package com.kumuluz.ee.jwt.auth.feature;
 
-import org.eclipse.microprofile.jwt.JsonWebToken;
+import io.smallrye.jwt.auth.jaxrs.JWTAuthenticationFilter;
+import io.smallrye.jwt.auth.jaxrs.JWTAuthorizationFilterRegistrar;
+import io.smallrye.jwt.auth.jaxrs.SmallRyeJWTAuthJaxRsFeature;
 
-import javax.ws.rs.core.SecurityContext;
-import java.security.Principal;
+import javax.ws.rs.container.DynamicFeature;
+import javax.ws.rs.container.ResourceInfo;
+import javax.ws.rs.core.Application;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Feature;
+import javax.ws.rs.core.FeatureContext;
+import javax.ws.rs.ext.Provider;
 
 /**
- * MP-JWT security context implementation
+ * A JAX-RS feature that configures and registers the {@link SmallRyeJWTAuthJaxRsFeature}, which performs the
+ * role based authorization.
  *
  * @author Benjamin Kastelic
  * @since 1.0.0
  */
-public class JWTSecurityContext implements SecurityContext {
-
-    private SecurityContext delegate;
-    private JsonWebToken principal;
-
-    public JWTSecurityContext(SecurityContext delegate, JsonWebToken principal) {
-        this.delegate = delegate;
-        this.principal = principal;
-    }
+@Provider
+public class JWTAuthDynamicFeature implements Feature {
 
     @Override
-    public Principal getUserPrincipal() {
-        return principal;
-    }
+    public boolean configure(FeatureContext featureContext) {
+        if (!FeatureDisabledSingleton.getInstance().isEnabled()) {
+            return false;
+        }
 
-    @Override
-    public boolean isUserInRole(String role) {
-        return principal != null && principal.getGroups() != null && principal.getGroups().contains(role);
-    }
+        featureContext.register(JWTAuthorizationFilterRegistrar.class);
 
-    @Override
-    public boolean isSecure() {
-        return delegate.isSecure();
-    }
-
-    @Override
-    public String getAuthenticationScheme() {
-        return delegate.getAuthenticationScheme();
+        return true;
     }
 }

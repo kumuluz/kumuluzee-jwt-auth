@@ -18,27 +18,25 @@
     <url>https://ee.kumuluz.com</url>
 
     <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <jaxb-api.version>2.3.1</jaxb-api.version>
 
-        <kumuluzee.version>3.10.0</kumuluzee.version>
-        <kumuluzee-config-mp.version>1.4.0</kumuluzee-config-mp.version>
-        <microprofile-jwt-auth.version>1.1.1</microprofile-jwt-auth.version>
-        <java-jwt.version>3.10.3</java-jwt.version>
-        <jwks-rsa.version>0.11.0</jwks-rsa.version>
-        <jackson.version>2.10.4</jackson.version>
+        <kumuluzee.version>4.0.0-SNAPSHOT</kumuluzee.version>
+        <kumuluzee-config-mp.version>1.5.0-SNAPSHOT</kumuluzee-config-mp.version>
+        <microprofile-jwt-auth.version>1.2.2</microprofile-jwt-auth.version>
+        <smallrye-jwt.version>3.5.0</smallrye-jwt.version>
 
         <kumuluzee-arquillian-container.version>1.1.0</kumuluzee-arquillian-container.version>
         <testng.version>6.9.9</testng.version>
-        <arquillian.version>1.1.13.Final</arquillian.version>
+        <arquillian.version>1.6.0.Final</arquillian.version>
 
         <maven-compiler-plugin.version>3.6.1</maven-compiler-plugin.version>
         <nexus.staging.plugin.version>1.6.8</nexus.staging.plugin.version>
         <gpg.plugin.version>1.6</gpg.plugin.version>
-        <surefire.plugin.version>2.20.1</surefire.plugin.version>
+        <surefire.plugin.version>2.22.1</surefire.plugin.version>
     </properties>
 
     <scm>
@@ -103,7 +101,12 @@
 
         <dependency>
             <groupId>com.kumuluz.ee</groupId>
-            <artifactId>kumuluzee-common</artifactId>
+            <artifactId>kumuluzee-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.kumuluz.ee</groupId>
+            <artifactId>kumuluzee-servlet-jetty</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -123,36 +126,21 @@
         </dependency>
 
         <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>java-jwt</artifactId>
-            <version>${java-jwt.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-databind</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>com.kumuluz.ee.config</groupId>
+            <artifactId>kumuluzee-config-mp</artifactId>
+            <version>${kumuluzee-config-mp.version}</version>
         </dependency>
+
         <dependency>
-            <groupId>com.auth0</groupId>
-            <artifactId>jwks-rsa</artifactId>
-            <version>${jwks-rsa.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.fasterxml.jackson.core</groupId>
-                    <artifactId>jackson-databind</artifactId>
-                </exclusion>
-            </exclusions>
+            <groupId>io.smallrye</groupId>
+            <artifactId>smallrye-jwt-cdi-extension</artifactId>
+            <version>${smallrye-jwt.version}</version>
         </dependency>
+
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>${jackson.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>${jackson.version}</version>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>${jaxb-api.version}</version>
         </dependency>
 
         <dependency>
@@ -274,19 +262,6 @@
                     </plugin>
                 </plugins>
             </build>
-        </profile>
-        <profile>
-            <id>java9-modules</id>
-            <activation>
-                <jdk>[9,)</jdk>
-            </activation>
-            <dependencies>
-                <dependency>
-                    <groupId>javax.xml.bind</groupId>
-                    <artifactId>jaxb-api</artifactId>
-                    <version>${jaxb-api.version}</version>
-                </dependency>
-            </dependencies>
         </profile>
     </profiles>
 </project>

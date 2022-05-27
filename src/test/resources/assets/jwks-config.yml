@@ -1,4 +1,0 @@
-kumuluzee:
-  jwt-auth:
-    jwks-uri: http://localhost:8081/jwks
-    issuer: http://example.com

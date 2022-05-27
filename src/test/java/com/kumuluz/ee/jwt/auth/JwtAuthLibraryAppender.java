@@ -20,13 +20,8 @@
  */
 package com.kumuluz.ee.jwt.auth;
 
-import com.kumuluz.ee.jwt.auth.cdi.ClaimProducer;
-import com.kumuluz.ee.jwt.auth.context.JWTSecurityContext;
-import com.kumuluz.ee.jwt.auth.feature.JWTRolesAllowedDynamicFeature;
-import com.kumuluz.ee.jwt.auth.filter.JWTAuthorizationFilter;
-import com.kumuluz.ee.jwt.auth.helper.ClaimHelper;
-import com.kumuluz.ee.jwt.auth.principal.JWTPrincipal;
-import com.kumuluz.ee.jwt.auth.validator.JWTValidator;
+import com.kumuluz.ee.jwt.auth.cdi.OptionalAwareSmallRyeJWTAuthCDIExtension;
+import com.kumuluz.ee.jwt.auth.config.JWTAuthConfigExtension;
 import org.jboss.arquillian.container.test.spi.client.deployment.CachedAuxilliaryArchiveAppender;
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -43,16 +38,11 @@ public class JwtAuthLibraryAppender extends CachedAuxilliaryArchiveAppender {
     @Override
     protected Archive<?> buildArchive() {
 
-        return ShrinkWrap.create(JavaArchive.class, "kumuluzee-jwt-auth-0.0.0.jar")
-                .addPackages(true, JWTValidator.class.getPackage())
-                .addPackages(true, JWTPrincipal.class.getPackage())
-                .addPackages(true, ClaimHelper.class.getPackage())
-                .addPackages(true, JWTAuthorizationFilter.class.getPackage())
-                .addPackages(true, JWTRolesAllowedDynamicFeature.class.getPackage())
-                .addPackages(true, JWTSecurityContext.class.getPackage())
-                .addPackages(true, ClaimProducer.class.getPackage())
-                .addClass(JWTAuthExtension.class)
+        return ShrinkWrap.create(JavaArchive.class, "kumuluzee-jwt-auth-1.2.0-SNAPSHOT.jar")
+                .addPackages(true, "com.kumuluz.ee.jwt.auth")
+                .addAsServiceProvider(com.kumuluz.ee.common.ConfigExtension.class, JWTAuthConfigExtension.class)
                 .addAsServiceProvider(com.kumuluz.ee.common.Extension.class, JWTAuthExtension.class)
+                .addAsServiceProvider(javax.enterprise.inject.spi.Extension.class, OptionalAwareSmallRyeJWTAuthCDIExtension.class)
                 .addAsResource("META-INF/beans.xml");
     }
 }

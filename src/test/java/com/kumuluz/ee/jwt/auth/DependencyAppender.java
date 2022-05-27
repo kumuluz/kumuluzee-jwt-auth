@@ -34,30 +34,20 @@ import java.util.ResourceBundle;
  */
 public class DependencyAppender implements MavenDependencyAppender {
 
-    private static final ResourceBundle versionsBundle =
-            ResourceBundle.getBundle("META-INF/kumuluzee/jwt-auth/versions");
-
-    private static final String NIMBUS_JOSE_JWT_VERSION = "4.23";
+    private static final ResourceBundle versionsBundle = ResourceBundle.getBundle("META-INF/kumuluzee/jwt-auth/versions");
 
     @Override
     public List<String> addLibraries() {
 
         List<String> libs = new ArrayList<>();
 
+        libs.add("com.kumuluz.ee:kumuluzee-servlet-jetty:");
         libs.add("com.kumuluz.ee:kumuluzee-jax-rs-jersey:");
         libs.add("com.kumuluz.ee:kumuluzee-json-p-jsonp:");
         libs.add("com.kumuluz.ee:kumuluzee-cdi-weld:");
-        libs.add("com.kumuluz.ee.config:kumuluzee-config-mp:" +
-                versionsBundle.getString("kumuluzee-config-mp-version"));
-        libs.add("org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:" +
-                versionsBundle.getString("microprofile-jwt-auth-version"));
-        libs.add("com.auth0:java-jwt:" +
-                versionsBundle.getString("java-jwt-version"));
-        libs.add("com.auth0:jwks-rsa:" +
-                versionsBundle.getString("jwks-rsa-version"));
-        libs.add("com.fasterxml.jackson.core:jackson-databind:" + versionsBundle.getString("jackson-version"));
-
-        libs.add("com.nimbusds:nimbus-jose-jwt:" + NIMBUS_JOSE_JWT_VERSION);
+        libs.add("com.kumuluz.ee.config:kumuluzee-config-mp:" + versionsBundle.getString("kumuluzee-config-mp-version"));
+        libs.add("org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:" + versionsBundle.getString("microprofile-jwt-auth-version"));
+        libs.add("io.smallrye:smallrye-jwt-cdi-extension:" + versionsBundle.getString("smallrye-jwt.version"));
 
         return libs;
     }
