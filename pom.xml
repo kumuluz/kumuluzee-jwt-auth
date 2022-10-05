@@ -29,7 +29,7 @@
         <microprofile-jwt-auth.version>1.1.1</microprofile-jwt-auth.version>
         <java-jwt.version>3.10.3</java-jwt.version>
         <jwks-rsa.version>0.11.0</jwks-rsa.version>
-        <jackson.version>2.10.4</jackson.version>
+        <jackson.version>2.12.6.1</jackson.version>
 
         <kumuluzee-arquillian-container.version>1.1.0</kumuluzee-arquillian-container.version>
         <testng.version>6.9.9</testng.version>
